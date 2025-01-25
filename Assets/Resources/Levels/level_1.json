@@ -1,0 +1,23 @@
+{
+    "levelNumber": 1,
+    "gridSize": {
+        "x": 4,
+        "y": 8
+    },
+    "invalidCells": [
+        {"x": 1, "y": 1},
+        {"x": 2, "y": 1},
+        {"x": 3, "y": 1}
+    ],
+    "passengers": [
+        {"x": 0, "y": 2, "color": 0},
+        {"x": 1, "y": 3, "color": 1},
+        {"x": 1, "y": 4, "color": 2}
+
+    ],
+    "busSequence": [
+        {"color": 0, "arrivalOrder": 0, "capacity": 3},
+        {"color": 1, "arrivalOrder": 1, "capacity": 3}
+    ],
+    "timeLimit": 60.0
+}
