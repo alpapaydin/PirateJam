@@ -24,6 +24,15 @@ public class GridPositioningManager : MonoBehaviour
     private bool isInitialized;
     private Vector3 centeredPosition;
 
+    public event System.Action OnGridPositioned;
+
+    private IEnumerator PositionGridNextFrame()
+    {
+        yield return new WaitForEndOfFrame();
+        PositionAndScaleGrid();
+        isInitialized = true;
+        OnGridPositioned?.Invoke();  // Notify when grid is positioned
+    }
 
     private void Awake()
     {
@@ -49,13 +58,6 @@ public class GridPositioningManager : MonoBehaviour
     {
         gridSize = newGridSize;
         StartCoroutine(PositionGridNextFrame());
-    }
-
-    private IEnumerator PositionGridNextFrame()
-    {
-        yield return new WaitForEndOfFrame();
-        PositionAndScaleGrid();
-        isInitialized = true;
     }
 
     private void PositionAndScaleGrid()

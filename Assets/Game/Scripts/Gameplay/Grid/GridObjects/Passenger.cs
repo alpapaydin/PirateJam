@@ -16,7 +16,9 @@ public class Passenger : GridObject
     private bool isActivated;
     private bool canMove;
     private bool isMoving;
+    private bool isHidden;
     private TapController tapController;
+    private BenchSlot assignedBenchSlot;
 
     public PassengerColor Color => passengerColor;
     public Vector2Int GridPosition => gridPosition;
@@ -31,36 +33,26 @@ public class Passenger : GridObject
         }
         tapController.OnTapped.AddListener(HandleTap);
     }
+    private void OnDestroy()
+    {
+        if (tapController != null)
+        {
+            tapController.OnTapped.RemoveListener(HandleTap);
+            controller.OnGridUpdated -= UpdateVisuals;
+        }
+    }
 
     public void Initialize(PassengerData data, GridController ctrl)
     {
         controller = ctrl;
-        controller.OnGridUpdated += UpdateWalkableCue;
+        controller.OnGridUpdated += UpdateVisuals;
         passengerColor = data.color;
+        isHidden = data.isHidden;
         gridPosition = new Vector2Int(data.x, data.y);
         UpdateVisuals();
     }
 
-    private void UpdateVisuals()
-    {
-        if (skinnedMeshRenderer == null)
-        {
-            skinnedMeshRenderer = GetComponentInChildren<SkinnedMeshRenderer>();
-        }
-        if (skinnedMeshRenderer != null && skinnedMeshRenderer.materials.Length > 0)
-        {
-            Material[] materials = skinnedMeshRenderer.materials;
-            materials[0].color = GetColorFromType(passengerColor);
-            skinnedMeshRenderer.materials = materials;
-            UpdateWalkableCue();
-        }
-        else
-        {
-            Debug.LogError("SkinnedMeshRenderer or materials not found on passenger!");
-        }
-    }
-
-    public void UpdateWalkableCue()
+    public void UpdateVisuals()
     {
         if (skinnedMeshRenderer == null)
         {
@@ -69,7 +61,7 @@ public class Passenger : GridObject
         if (controller != null)
         {
             Material[] materials = skinnedMeshRenderer.materials;
-            materials[0].color = GetColorFromType(passengerColor);
+            materials[0].color = isHidden ? UnityEngine.Color.black : GetColorFromType(passengerColor);
             bool movementEnabled = controller.IsConnectedToFirstRow(gridPosition);
 
             if (canMove == movementEnabled) { return; }
@@ -77,6 +69,11 @@ public class Passenger : GridObject
             if (canMove)
             {
                 materials[0].SetFloat("_OutlineWidth", canMoveCueThickness);
+                if (isHidden)
+                {
+                    isHidden = false;
+                    UpdateVisuals();
+                }
             }
             else
             {
@@ -91,62 +88,99 @@ public class Passenger : GridObject
         return ColorUtility.GetColorFromType(type);
     }
 
-    public void HandleTap()
+    private void HandleTap()
     {
-        if (!controller.CanInteract)
-            return;
-
-        if (isActivated)
+        if (!CanActivate())
             return;
 
         List<Vector2Int> pathToFirstRow = controller.GetPathToFirstRow(gridPosition);
-        if (pathToFirstRow != null && pathToFirstRow.Count > 0)
+        if (pathToFirstRow == null || pathToFirstRow.Count == 0)
+            return;
+        if (controller.LevelController.TryAssignToShip(this))
         {
             isActivated = true;
             controller.MoveOutPassenger(gridPosition);
-            StartCoroutine(FollowPath(pathToFirstRow));
+            StartCoroutine(FollowPathAndExecute(pathToFirstRow, GoBoardShip));
+            return;
+        }
+        assignedBenchSlot = controller.LevelController.TryAssignToBenchSlot(this);
+        if (assignedBenchSlot != null)
+        {
+            isActivated = true;
+            controller.MoveOutPassenger(gridPosition);
+            StartCoroutine(FollowPathAndExecute(pathToFirstRow, GoToBench));
         }
     }
-
-    private IEnumerator FollowPath(List<Vector2Int> path)
+    private IEnumerator FollowPathAndExecute(List<Vector2Int> path, Func<IEnumerator> finalAction)
     {
         isMoving = true;
-
         for (int i = 1; i < path.Count; i++)
         {
             Vector2Int nextPos = path[i];
             MoveToCell(nextPos);
             yield return StartCoroutine(AnimateMovement(controller.GetWorldPosition(nextPos), animDuration));
         }
-        controller.MovePassengerToBench(this);
+        if (finalAction == GoToBench)
+        {
+            controller.MovePassengerToBench(this);
+        }
+        yield return StartCoroutine(finalAction());
+
         isMoving = false;
     }
 
-    public void MoveToCell(Vector2Int newPosition)
+    private IEnumerator GoBoardShip()
     {
-        gridPosition = newPosition;
-        StartCoroutine(AnimateMovement(controller.GetWorldPosition(newPosition), animDuration));
+        return controller.LevelController.BoardPassenger(this);
     }
+
+    private IEnumerator GoToBench()
+    {
+        yield return MoveTo(assignedBenchSlot.transform);
+        assignedBenchSlot.PassengerArrived(this);
+        controller.LevelController.PassengerArrivedToBench(this);
+    }
+
+    private bool CanActivate()
+    {
+        if (isActivated || controller?.LevelController == null || controller.LevelController.GameState != GameState.Playing)
+            return false;
+        return true;
+    }
+
     public IEnumerator MoveTo(Transform transform)
     {
         return AnimateMovement(transform.position, 1f);
     }
+
     public IEnumerator JumpTo(Transform transform)
     {
         return AnimateMovement(transform.position, 1f, true);
     }
 
+    public void MoveToCell(Vector2Int newPosition)
+    {
+        gridPosition = newPosition;
+        Vector3 targetWorldPos = controller.GetWorldPosition(newPosition);
+        StartCoroutine(AnimateMovement(targetWorldPos, animDuration));
+    }
+
     private IEnumerator AnimateMovement(Vector3 targetPosition, float duration, bool jumpAction = false)
     {
-        if (jumpAction) {
+        if (jumpAction)
+        {
             animator.SetTrigger("jump");
             yield return new WaitForSeconds(0.5f);
-        } else {
+        }
+        else
+        {
             animator.SetBool("isRunning", true);
         }
+
         isMoving = true;
         Vector3 startPosition = transform.position;
         float elapsedTime = 0;
+
         Vector3 moveDirection = (targetPosition - startPosition);
         if (moveDirection.sqrMagnitude > 0.001f)
         {
@@ -154,6 +188,7 @@ public class Passenger : GridObject
             Quaternion targetRotation = Quaternion.LookRotation(moveDirection);
             transform.rotation = targetRotation;
         }
+
         while (elapsedTime < duration)
         {
             elapsedTime += Time.deltaTime;
@@ -162,18 +197,9 @@ public class Passenger : GridObject
             transform.position = Vector3.Lerp(startPosition, targetPosition, t);
             yield return null;
         }
+
         transform.position = targetPosition;
         isMoving = false;
         animator.SetBool("isRunning", false);
-
-    }
-
-    private void OnDestroy()
-    {
-        if (tapController != null)
-        {
-            tapController.OnTapped.RemoveListener(HandleTap);
-            controller.OnGridUpdated -= UpdateWalkableCue;
-        }
     }
 }

@@ -11,6 +11,7 @@ public class GridController : MonoBehaviour
     [SerializeField] private Tilemap gridMap;
     [SerializeField] private GameObject validCellPrefab;
     [SerializeField] private GameObject passengerPrefab;
+    [SerializeField] private GameObject tunnelPrefab;
 
     [Header("Settings")]
     [SerializeField] private float cellHeight = 0.1f;
@@ -18,11 +19,14 @@ public class GridController : MonoBehaviour
     [Header("Parent Objects")]
     [SerializeField] private Transform cellContainer;
     [SerializeField] private Transform passengerContainer;
-
+    public LevelController LevelController => levelController;
+    public GameObject PassengerPrefab => passengerPrefab;
     public event System.Action OnGridUpdated;
     public event System.Action<Passenger> OnPassengerReachedBench;
-    public bool CanInteract = false;
 
+    private LevelController levelController;
+    private bool isGridPositioned = false;
+    private Dictionary<Vector2Int, Tunnel> tunnels = new Dictionary<Vector2Int, Tunnel>();
     private Dictionary<Vector2Int, GameObject> cellObjects = new Dictionary<Vector2Int, GameObject>();
     private Dictionary<Vector2Int, Passenger> passengers = new Dictionary<Vector2Int, Passenger>();
     private HashSet<Vector2Int> invalidCells = new HashSet<Vector2Int>();
@@ -57,9 +61,15 @@ public class GridController : MonoBehaviour
         }
     }
 
-    public void InitializeGrid(LevelData levelData)
+    public void InitializeGrid(LevelData levelData, LevelController controller)
     {
-        // Clear existing objects
+        levelController = controller;
+        if (levelController == null)
+        {
+            Debug.LogError("LevelController reference not provided!");
+            return;
+        }
+
         foreach (var cell in cellObjects.Values)
             if (cell != null) Destroy(cell);
         cellObjects.Clear();
@@ -68,11 +78,9 @@ public class GridController : MonoBehaviour
             if (passenger != null) Destroy(passenger.gameObject);
         passengers.Clear();
 
-        // Set up grid data
         gridSize = levelData.gridSize.ToVector2Int();
         invalidCells = new HashSet<Vector2Int>(levelData.invalidCells.Select(pos => new Vector2Int(pos.x, pos.y)));
 
-        // Create valid cells
         for (int x = 0; x < gridSize.x; x++)
         {
             for (int y = 0; y < gridSize.y; y++)
@@ -87,17 +95,42 @@ public class GridController : MonoBehaviour
         var positioningManager = GetComponent<GridPositioningManager>();
         if (positioningManager != null)
         {
+            isGridPositioned = false;
             positioningManager.InitializeGridPosition(gridSize);
+            positioningManager.OnGridPositioned += HandleGridPositioned;
         }
+
         // Spawn passengers
         foreach (var passengerData in levelData.passengers)
         {
             SpawnPassenger(passengerData);
         }
-        //Spawn tunnels
+
+        // Spawn tunnels
         foreach (var tunnelData in levelData.tunnels)
         {
             SpawnTunnel(tunnelData);
+        }
+
+        // Only trigger tunnel spawns if grid is already positioned
+        if (isGridPositioned)
+        {
+            TriggerTunnelSpawns();
+        }
+
+    }
+    private void HandleGridPositioned()
+    {
+        isGridPositioned = true;
+        TriggerTunnelSpawns();
+    }
+
+    private void OnDestroy()
+    {
+        var positioningManager = GetComponent<GridPositioningManager>();
+        if (positioningManager != null)
+        {
+            positioningManager.OnGridPositioned -= HandleGridPositioned;
         }
     }
 
@@ -109,7 +142,7 @@ public class GridController : MonoBehaviour
         cellObjects[gridPos] = cellObject;
     }
 
-    private void SpawnPassenger(PassengerData data)
+    public void SpawnPassenger(PassengerData data)
     {
         Vector2Int gridPos = new Vector2Int(data.x, data.y);
 
@@ -131,29 +164,62 @@ public class GridController : MonoBehaviour
             passengers[gridPos] = passenger;
         }
     }
-
-    private void SpawnTunnel(TunnelData tunnelData)
+    public void RegisterPassenger(Vector2Int position, Passenger passenger)
     {
-
+        if (passengers.ContainsKey(position))
+        {
+            Debug.LogWarning($"Overwriting passenger at position {position}");
+        }
+        passengers[position] = passenger;
     }
 
-    public Vector3 GetWorldPosition(Vector2Int gridPosition)
+    public GameObject SpawnPassengerObject(Vector3 position)
     {
-        // Simple grid-to-world conversion based on local position
-        return transform.position + new Vector3(
+        return Instantiate(passengerPrefab, position, Quaternion.identity, passengerContainer);
+    }
+
+    private void SpawnTunnel(TunnelData data)
+    {
+        Vector2Int gridPos = new Vector2Int(data.x, data.y);
+
+        if (!IsValidCell(gridPos))
+        {
+            Debug.LogWarning($"Trying to spawn tunnel at invalid position: {gridPos}");
+            return;
+        }
+
+        Vector3 worldPos = GetWorldPosition(gridPos);
+        GameObject tunnelObj = Instantiate(tunnelPrefab, worldPos, Quaternion.identity, transform);
+        Tunnel tunnel = tunnelObj.GetComponent<Tunnel>();
+
+        if (tunnel != null)
+        {
+            tunnel.Initialize(data, this);
+            tunnels[gridPos] = tunnel;
+        }
+    }
+
+    public void TriggerTunnelSpawns()
+    {
+        foreach (var tunnel in tunnels.Values)
+        {
+            tunnel.TrySpawnNextPassenger();
+        }
+    }
+
+    private Vector3 GetLocalPosition(Vector2Int gridPosition)
+    {
+        return new Vector3(
             gridPosition.x + 0.5f,
             cellHeight / 2f,
             -(gridPosition.y + 0.5f)
         );
     }
 
-    public Vector2Int GetGridPosition(Vector3 worldPosition)
+    public Vector3 GetWorldPosition(Vector2Int gridPosition)
     {
-        Vector3 localPos = worldPosition - transform.position;
-        return new Vector2Int(
-            Mathf.FloorToInt(localPos.x),
-            -Mathf.FloorToInt(localPos.z)
-        );
+        Vector3 localPos = GetLocalPosition(gridPosition);
+        return transform.TransformPoint(localPos);
     }
 
     public bool IsValidCell(Vector2Int position)
@@ -164,48 +230,39 @@ public class GridController : MonoBehaviour
     }
 
     public bool HasPassenger(Vector2Int position) => passengers.ContainsKey(position);
-
-    public Passenger GetPassenger(Vector2Int position) =>
-        passengers.TryGetValue(position, out Passenger passenger) ? passenger : null;
+    public bool HasTunnel(Vector2Int position) => tunnels.ContainsKey(position);
 
     private readonly Vector2Int[] directions = new Vector2Int[]
-{
+    {
     new Vector2Int(0, 1),  // up
     new Vector2Int(0, -1), // down
     new Vector2Int(1, 0),  // right
     new Vector2Int(-1, 0)  // left
-};
-
+    };
+    
     public bool IsConnectedToFirstRow(Vector2Int position)
     {
         HashSet<Vector2Int> visited = new HashSet<Vector2Int>();
         Queue<Vector2Int> queue = new Queue<Vector2Int>();
-
         queue.Enqueue(position);
         visited.Add(position);
-
         while (queue.Count > 0)
         {
             Vector2Int current = queue.Dequeue();
-
             // If we reached the first row (y = 0), return true
             if (current.y == 0)
                 return true;
-
             // Check all adjacent cells
             foreach (Vector2Int dir in directions)
             {
                 Vector2Int next = current + dir;
-
                 // Skip if we've already visited this cell or it's not walkable
                 if (visited.Contains(next) || !IsWalkable(next))
                     continue;
-
                 queue.Enqueue(next);
                 visited.Add(next);
             }
         }
-
         return false;
     }
 
@@ -215,17 +272,13 @@ public class GridController : MonoBehaviour
         Dictionary<Vector2Int, Vector2Int> cameFrom = new Dictionary<Vector2Int, Vector2Int>();
         Queue<Vector2Int> queue = new Queue<Vector2Int>();
         HashSet<Vector2Int> visited = new HashSet<Vector2Int>();
-
         queue.Enqueue(start);
         visited.Add(start);
-
         bool foundPath = false;
         Vector2Int endPos = Vector2Int.zero;
-
         while (queue.Count > 0)
         {
             Vector2Int currentV = queue.Dequeue();
-
             // If we reached the first row
             if (currentV.y == 0)
             {
@@ -233,11 +286,9 @@ public class GridController : MonoBehaviour
                 endPos = currentV;
                 break;
             }
-
             foreach (Vector2Int dir in directions)
             {
                 Vector2Int next = currentV + dir;
-
                 // Skip if we've already visited this cell or it's not walkable
                 if (visited.Contains(next) || !IsWalkable(next))
                     continue;
@@ -250,11 +301,9 @@ public class GridController : MonoBehaviour
 
         if (!foundPath)
             return null;
-
         // Reconstruct path
         List<Vector2Int> path = new List<Vector2Int>();
         Vector2Int current = endPos;
-
         while (!current.Equals(start))
         {
             path.Add(current);
@@ -268,12 +317,13 @@ public class GridController : MonoBehaviour
 
     private bool IsWalkable(Vector2Int position)
     {
-        return IsValidCell(position) && !HasPassenger(position);
+        return IsValidCell(position) && !HasPassenger(position) && !HasTunnel(position);
     }
 
     public void MoveOutPassenger(Vector2Int from)
     {
         passengers.Remove(from);
+        TriggerTunnelSpawns();
         OnGridUpdated?.Invoke();
     }
 

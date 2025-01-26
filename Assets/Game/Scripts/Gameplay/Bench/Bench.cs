@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Bench : MonoBehaviour
@@ -34,14 +35,14 @@ public class Bench : MonoBehaviour
         }
     }
 
-    public Transform AssignPassengerToSlot(Passenger passenger)
+    public BenchSlot AssignPassengerToSlot(Passenger passenger)
     {
         foreach (BenchSlot slot in slots)
         {
             if (!slot.IsOccupied)
             {
                 slot.AssignPassenger(passenger);
-                return slot.transform;
+                return slot;
             }
         }
         return null;
@@ -59,17 +60,20 @@ public class Bench : MonoBehaviour
         }
         return occupiedSlots;
     }
-
-    public void ClearSlot(int slotId)
+    public bool IsFull()
     {
-        if (slotId >= 0 && slotId < slots.Count)
+        return !slots.Any(slot => !slot.IsFull);
+    }
+    public void ClearSlotForPassenger(Passenger passenger)
+    {
+        foreach (BenchSlot slot in slots)
         {
-            slots[slotId].ClearSlot();
+            if (slot.Passenger == passenger)
+            {
+                slot.ClearSlot();
+                break;
+            }
         }
     }
 
-    public bool IsSlotAvailable(int slotId)
-    {
-        return slotId >= 0 && slotId < slots.Count && !slots[slotId].IsOccupied;
-    }
 }

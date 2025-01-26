@@ -9,16 +9,17 @@ public class LevelController : MonoBehaviour
     [SerializeField] private Bench bench;
     [SerializeField] private ShipController shipController;
 
+    [SerializeField] private float boardingXOffsetRange = 1f;
     [SerializeField] private Transform boardAnchor;
     [SerializeField] private Transform shipAnchor;
-
+    public GameState GameState => gameState;
+    public Bench Bench => bench;
+    public ShipController ShipController => shipController;
     private GameState gameState = GameState.Paused;
     private LevelData levelData;
-    private List<Passenger> waitingPassengers = new List<Passenger>();
 
     private void Awake()
     {
-        grid.OnPassengerReachedBench += PassengerReachedBench;
         shipController.OnShipDocked += NewShipDocked;
         shipController.OnShipDeparted += ShipDeparted;
     }
@@ -37,8 +38,7 @@ public class LevelController : MonoBehaviour
             return;
         }
         levelData = JsonUtility.FromJson<LevelData>(levelFile.text);
-
-        grid.InitializeGrid(levelData);
+        grid.InitializeGrid(levelData, this);
         shipController.InitializeShipSpawner(levelData);
     }
 
@@ -46,9 +46,8 @@ public class LevelController : MonoBehaviour
     {
         if (ship.Data.arrivalOrder == 0)
             gameState = GameState.Playing;
-            grid.CanInteract = true;
         TryBoardBenchPassengers();
-        TryBoardWaitingPassengers();
+        EvaluateLoseCondition();
     }
 
     private void ShipDeparted(Ship ship)
@@ -57,19 +56,35 @@ public class LevelController : MonoBehaviour
             LevelWon();
     }
 
-    private void PassengerReachedBench(Passenger passenger)
+    public void PassengerArrivedToBench(Passenger passenger)
     {
-        if (TryBoardPassenger(passenger))
-            return;
-        if (TryMoveToBench(passenger))
-            return;
+        if (bench.IsFull())
+            EvaluateLoseCondition();
+    }
 
+    private void EvaluateLoseCondition()
+    {
+        if (!bench.IsFull())
+            return;
         Ship dockedShip = shipController.GetDockedShip();
-        if (dockedShip != null && !dockedShip.IsFull)
-        {
-            LevelFailed();
-        } else
-            waitingPassengers.Add(passenger);
+        if (dockedShip == null || dockedShip.IsFull)
+            return;
+        LevelFailed();
+    }
+
+    public BenchSlot TryAssignToBenchSlot(Passenger passenger)
+    {
+        return bench.AssignPassengerToSlot(passenger);
+    }
+
+    public bool TryAssignToShip(Passenger passenger)
+    {
+        Ship ship = shipController.GetDockedShip();
+        if (ship == null || passenger == null || !CheckCanBoardPassenger(passenger, ship))
+            return false;
+        ship.PassengerAssigned();
+        return true;
+
     }
 
     private void TryBoardBenchPassengers()
@@ -78,33 +93,36 @@ public class LevelController : MonoBehaviour
         foreach (BenchSlot slot in occupiedSlots)
         {
             if (slot.Passenger == null) continue;
-            if (TryBoardPassenger(slot.Passenger))
+            if (TryAssignToShip(slot.Passenger))
+            {
+                StartCoroutine(BoardPassenger(slot.Passenger));
                 slot.ClearSlot();
-        }
-    }
-    private void TryBoardWaitingPassengers()
-    {
-        foreach (Passenger passenger in waitingPassengers)
-        {
-            PassengerReachedBench(passenger);
+            }
         }
     }
 
-    private bool TryBoardPassenger(Passenger passenger)
+    private Transform CreateOffsetAnchor(Transform baseTransform, float xOffsetRange)
+    {
+        Vector3 newPosition = baseTransform.position;
+        newPosition.x += Random.Range(-xOffsetRange, xOffsetRange);
+
+        GameObject tempAnchor = new GameObject($"TempAnchor_{baseTransform.name}");
+        tempAnchor.transform.position = newPosition;
+
+        return tempAnchor.transform;
+    }
+
+    public IEnumerator BoardPassenger(Passenger passenger)
     {
         Ship ship = shipController.GetDockedShip();
-        if (ship == null || passenger == null || !CheckCanBoardPassenger(passenger, ship))
-            return false;
-        ship.PassengerAssigned();
-        StartCoroutine(BoardPassenger(passenger, ship));
-        return true;
-    }
-
-    private IEnumerator BoardPassenger(Passenger passenger, Ship ship)
-    {
-        yield return passenger.MoveTo(boardAnchor);
+        if (ship == null || passenger == null)
+            yield return null;
+        Transform tempAnchor = CreateOffsetAnchor(boardAnchor, boardingXOffsetRange);
+        yield return passenger.MoveTo(tempAnchor);
+        Destroy(tempAnchor.gameObject);
         yield return passenger.JumpTo(shipAnchor);
         ship.PassengerBoarded();
+        bench.ClearSlotForPassenger(passenger);
         Destroy(passenger.gameObject);
         yield return null;
     }
@@ -116,21 +134,14 @@ public class LevelController : MonoBehaviour
         return false;
     }
 
-    private bool TryMoveToBench(Passenger passenger) 
-    { 
-        Transform benchTransform = bench.AssignPassengerToSlot(passenger);
-        if (benchTransform == null)
-            return false;
-        StartCoroutine(passenger.MoveTo(benchTransform));
-        return true;
-    }
-
     private void LevelWon() 
     {
+        print("won");
         gameState = GameState.Won;
     }
     private void LevelFailed() 
     {
+        print("failed");
         gameState = GameState.Failed;
     }
 }

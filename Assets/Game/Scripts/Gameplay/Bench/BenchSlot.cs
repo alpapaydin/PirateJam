@@ -4,9 +4,11 @@ public class BenchSlot : MonoBehaviour
 {
     private int slotId = -1;
     private bool isOccupied = false;
+    private bool isFull = false;
     private Passenger passenger = null;
 
     public int SlotId => slotId;
+    public bool IsFull => isFull;
     public bool IsOccupied => isOccupied;
     public Passenger Passenger => passenger;
 
@@ -21,9 +23,18 @@ public class BenchSlot : MonoBehaviour
         isOccupied = true;
     }
 
+    public void PassengerArrived(Passenger newPassenger)
+    {
+        isFull = true;
+    }
+
     public void ClearSlot()
     {
-        passenger = null;
+        if (passenger != null)
+        {
+            passenger = null;
+        }
         isOccupied = false;
+        isFull = false;
     }
 }

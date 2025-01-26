@@ -85,8 +85,15 @@ public class TunnelData
     public int x;
     public int y;
     public int orientation;
-    public Passenger[] passengers = null;
+    public TunnelPassenger[] passengers = null;
 }
+
+[System.Serializable]
+public class TunnelPassenger
+{
+    public PassengerColor color;
+}
+
 
 [System.Serializable]
 public class ShipData
