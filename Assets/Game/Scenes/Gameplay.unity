@@ -299,6 +299,85 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2146609147}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &327555919
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 327555921}
+  - component: {fileID: 327555920}
+  m_Layer: 0
+  m_Name: SoundManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &327555920
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 327555919}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed8bdd8d7efcdea4d8227a94ea6b69fd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sounds:
+  - name: pop
+    clip: {fileID: 8300000, guid: 94a576840d5376948a8584150f8d8574, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: error
+    clip: {fileID: 8300000, guid: 46208d5761ff7504988d4e368f3b1593, type: 3}
+    volume: 0.223
+    pitch: 0.834
+    loop: 0
+    source: {fileID: 0}
+  - name: bloop1
+    clip: {fileID: 8300000, guid: 6d8ec69af90bb1d47be9e3340d792953, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: bloop2
+    clip: {fileID: 8300000, guid: 3ade70ab08b1f6747affdca9bb13b209, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: bloop3
+    clip: {fileID: 8300000, guid: 43ad42e17a25dc74bbcf7e9167d1804b, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 0
+    source: {fileID: 0}
+  poolSize: 5
+  masterVolume: 1
+  sfxVolume: 1
+  uiVolume: 1
+--- !u!4 &327555921
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 327555919}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -9.225436, y: -10.4893875, z: 6.0477123}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &372578919
 GameObject:
   m_ObjectHideFlags: 0
@@ -860,6 +939,67 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 77, y: 0, z: 0}
+--- !u!1 &1101212881
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1101212883}
+  - component: {fileID: 1101212882}
+  - component: {fileID: 1101212884}
+  m_Layer: 5
+  m_Name: UI
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1101212882
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1101212881}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_PanelSettings: {fileID: 11400000, guid: 1619603752fb3c44f9d22023096a9bca, type: 2}
+  m_ParentUI: {fileID: 0}
+  sourceAsset: {fileID: 9197481963319205126, guid: 18a6e7ee2d382c74fb25576304082953, type: 3}
+  m_SortingOrder: 0
+--- !u!4 &1101212883
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1101212881}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1101212884
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1101212881}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7cc849a4adeab6b409bdd0d57d41fc3b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1263709508
 GameObject:
   m_ObjectHideFlags: 0
@@ -1084,9 +1224,9 @@ MonoBehaviour:
   grid: {fileID: 2058702908}
   bench: {fileID: 824725819}
   shipController: {fileID: 372578922}
+  uiController: {fileID: 1101212884}
   boardingXOffsetRange: 1
   boardAnchor: {fileID: 322501001}
-  waitingAnchor: {fileID: 1486380903}
   shipAnchor: {fileID: 1263709509}
 --- !u!4 &1710998138
 Transform:
@@ -1324,3 +1464,5 @@ SceneRoots:
   - {fileID: 4459779425142813124}
   - {fileID: 372578921}
   - {fileID: 1710998138}
+  - {fileID: 327555921}
+  - {fileID: 1101212883}

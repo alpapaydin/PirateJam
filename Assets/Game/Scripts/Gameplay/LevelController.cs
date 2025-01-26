@@ -8,6 +8,7 @@ public class LevelController : MonoBehaviour
     [SerializeField] private GridController grid;
     [SerializeField] private Bench bench;
     [SerializeField] private ShipController shipController;
+    [SerializeField] private UIController uiController;
 
     [SerializeField] private float boardingXOffsetRange = 1f;
     [SerializeField] private Transform boardAnchor;
@@ -15,8 +16,11 @@ public class LevelController : MonoBehaviour
     public GameState GameState => gameState;
     public Bench Bench => bench;
     public ShipController ShipController => shipController;
+
     private GameState gameState = GameState.Paused;
     private LevelData levelData;
+    private float currentTime;
+    private Coroutine timerCoroutine;
 
     private void Awake()
     {
@@ -38,14 +42,53 @@ public class LevelController : MonoBehaviour
             return;
         }
         levelData = JsonUtility.FromJson<LevelData>(levelFile.text);
+        currentTime = levelData.timeLimit;
+        uiController.SetLevelText(levelNumber);
+        uiController.SetTimerText(currentTime);
         grid.InitializeGrid(levelData, this);
         shipController.InitializeShipSpawner(levelData);
+    }
+
+    private IEnumerator TimerCoroutine()
+    {
+        WaitForSeconds wait = new WaitForSeconds(1f); // Cache WaitForSeconds to avoid garbage collection
+
+        while (currentTime > 0 && GameState == GameState.Playing)
+        {
+            yield return wait;
+            currentTime--;
+            uiController.SetTimerText(currentTime);
+
+            if (currentTime <= 0)
+            {
+                LevelFailed();
+            }
+        }
+    }
+
+    public void StartTimer()
+    {
+        StopTimer();
+        timerCoroutine = StartCoroutine(TimerCoroutine());
+    }
+
+    public void StopTimer()
+    {
+        if (timerCoroutine != null)
+        {
+            StopCoroutine(timerCoroutine);
+            timerCoroutine = null;
+        }
     }
 
     private void NewShipDocked(Ship ship)
     {
         if (ship.Data.arrivalOrder == 0)
+        { 
             gameState = GameState.Playing;
+            StartTimer();
+        }
+        
         TryBoardBenchPassengers();
         EvaluateLoseCondition();
     }
@@ -120,6 +163,7 @@ public class LevelController : MonoBehaviour
         Transform tempAnchor = CreateOffsetAnchor(boardAnchor, boardingXOffsetRange);
         yield return passenger.MoveTo(tempAnchor);
         Destroy(tempAnchor.gameObject);
+        SoundController.Instance.PlaySound("pop");
         yield return passenger.JumpTo(shipAnchor);
         ship.PassengerBoarded();
         bench.ClearSlotForPassenger(passenger);

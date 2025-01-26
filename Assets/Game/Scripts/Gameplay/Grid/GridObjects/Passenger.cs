@@ -91,7 +91,12 @@ public class Passenger : GridObject
     private void HandleTap()
     {
         if (!TryActivate())
+        {
             animator.SetTrigger("wave");
+            SoundController.Instance.PlaySound("error");
+        }
+        else
+            SoundController.Instance.PlaySound("pop");
     }
 
     private bool TryActivate()

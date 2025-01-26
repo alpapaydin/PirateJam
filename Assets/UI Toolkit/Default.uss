@@ -1,0 +1,29 @@
+.text {
+    -unity-font: url('project://database/Assets/Game/Assets/Fonts/LilitaOne-Regular.ttf?fileID=12800000&guid=cb97e51d8f8715e449734b89e58b4e23&type=3#LilitaOne-Regular');
+    -unity-font-definition: url('project://database/Assets/Game/Assets/Fonts/LilitaOne-Regular%20SDF%201.asset?fileID=11400000&guid=6b5db9124156f234fac09126333818bc&type=2#LilitaOne-Regular SDF 1');
+    -unity-text-outline-width: 2px;
+    color: rgb(255, 255, 255);
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    -unity-text-align: middle-center;
+    -unity-text-outline-color: rgba(0, 0, 0, 0.78);
+    text-shadow: 15px 15px 10px rgba(0, 0, 0, 0.66);
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-direction: column;
+    font-size: 128px;
+    -unity-font-style: normal;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: visible;
+    rotate: 0;
+    scale: 0.25 0.25;
+    height: 75%;
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+    width: 10%;
+}

@@ -44,6 +44,10 @@ public class Ship : MonoBehaviour
     {
         boardedCount++;
         UpdateVisuals(boardedCount);
+
+        string result = Mathf.Clamp(boardedCount, 1, 3).ToString();
+        SoundController.Instance.PlaySound("bloop" + result);
+
         if (boardedCount >= Data.capacity)
             DepartShip();
     }

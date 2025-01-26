@@ -180,6 +180,10 @@ PrefabInstance:
       value: AnimatedHCC
       objectReference: {fileID: 0}
     - target: {fileID: 5034432578751076050, guid: 6e5c405bd84bb0742b82d09cc003049b, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5034432578751076050, guid: 6e5c405bd84bb0742b82d09cc003049b, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 0e77421ddaf1cf943996804002217f2a, type: 2}

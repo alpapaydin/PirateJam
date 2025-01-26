@@ -48,5 +48,5 @@
         {"color": 2, "arrivalOrder": 2, "capacity": 3}
 
     ],
-    "timeLimit": 60.0
+    "timeLimit": 15.0
 }
