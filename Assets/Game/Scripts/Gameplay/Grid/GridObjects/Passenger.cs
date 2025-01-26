@@ -90,18 +90,24 @@ public class Passenger : GridObject
 
     private void HandleTap()
     {
+        if (!TryActivate())
+            animator.SetTrigger("wave");
+    }
+
+    private bool TryActivate()
+    {
         if (!CanActivate())
-            return;
+            return false;
 
         List<Vector2Int> pathToFirstRow = controller.GetPathToFirstRow(gridPosition);
         if (pathToFirstRow == null || pathToFirstRow.Count == 0)
-            return;
+            return false;
         if (controller.LevelController.TryAssignToShip(this))
         {
             isActivated = true;
             controller.MoveOutPassenger(gridPosition);
             StartCoroutine(FollowPathAndExecute(pathToFirstRow, GoBoardShip));
-            return;
+            return true;
         }
         assignedBenchSlot = controller.LevelController.TryAssignToBenchSlot(this);
         if (assignedBenchSlot != null)
@@ -109,8 +115,11 @@ public class Passenger : GridObject
             isActivated = true;
             controller.MoveOutPassenger(gridPosition);
             StartCoroutine(FollowPathAndExecute(pathToFirstRow, GoToBench));
+            return true;
         }
+        return false;
     }
+
     private IEnumerator FollowPathAndExecute(List<Vector2Int> path, Func<IEnumerator> finalAction)
     {
         isMoving = true;
