@@ -9,6 +9,22 @@ public enum PassengerColor
     Cyan,
 }
 
+public static class ColorUtility
+{
+    public static Color GetColorFromType(PassengerColor type)
+    {
+        return type switch
+        {
+            PassengerColor.Red => new Color(1f, 0.2f, 0.2f),
+            PassengerColor.Green => new Color(0.2f, 1f, 0.2f),
+            PassengerColor.Blue => new Color(0.2f, 0.2f, 1f),
+            PassengerColor.Purple => new Color(0.8f, 0.2f, 0.8f),
+            PassengerColor.Cyan => new Color(0.2f, 0.8f, 0.8f),
+            _ => Color.white
+        };
+    }
+}
+
 public enum GameState
 {
     Playing,
@@ -17,6 +33,7 @@ public enum GameState
     Paused
 }
 
+
 [System.Serializable]
 public class LevelData
 {
@@ -24,7 +41,8 @@ public class LevelData
     public SerializableVector2Int gridSize;
     public Vector2Int[] invalidCells;
     public PassengerData[] passengers;
-    public BusData[] busSequence;
+    public TunnelData[] tunnels;
+    public ShipData[] busSequence;
     public float timeLimit = 60f;
     public int benchSlots = 5;
 }
@@ -53,23 +71,25 @@ public struct SerializableVector2Int
 }
 
 [System.Serializable]
-public class CellData
-{
-    public int x;
-    public int y;
-    public bool isValid;
-}
-
-[System.Serializable]
 public class PassengerData
 {
     public int x;
     public int y;
     public PassengerColor color;
+    public bool isHidden = false;
 }
 
 [System.Serializable]
-public class BusData
+public class TunnelData
+{
+    public int x;
+    public int y;
+    public int orientation;
+    public Passenger[] passengers = null;
+}
+
+[System.Serializable]
+public class ShipData
 {
     public PassengerColor color;
     public int arrivalOrder;

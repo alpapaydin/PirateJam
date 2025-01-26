@@ -21,16 +21,12 @@ public class GridController : MonoBehaviour
 
     public event System.Action OnGridUpdated;
     public event System.Action<Passenger> OnPassengerReachedBench;
+    public bool CanInteract = false;
 
     private Dictionary<Vector2Int, GameObject> cellObjects = new Dictionary<Vector2Int, GameObject>();
     private Dictionary<Vector2Int, Passenger> passengers = new Dictionary<Vector2Int, Passenger>();
     private HashSet<Vector2Int> invalidCells = new HashSet<Vector2Int>();
     private Vector2Int gridSize;
-
-    private void Start()
-    {
-        LoadLevel(1);
-    }
 
     private void Awake()
     {
@@ -61,20 +57,7 @@ public class GridController : MonoBehaviour
         }
     }
 
-    public void LoadLevel(int levelNumber)
-    {
-        TextAsset levelFile = Resources.Load<TextAsset>($"Levels/level_{levelNumber}");
-        if (levelFile == null)
-        {
-            Debug.LogError($"Level {levelNumber} file not found in Resources/Levels folder");
-            return;
-        }
-
-        LevelData levelData = JsonUtility.FromJson<LevelData>(levelFile.text);
-        InitializeGrid(levelData);
-    }
-
-    private void InitializeGrid(LevelData levelData)
+    public void InitializeGrid(LevelData levelData)
     {
         // Clear existing objects
         foreach (var cell in cellObjects.Values)
@@ -111,6 +94,11 @@ public class GridController : MonoBehaviour
         {
             SpawnPassenger(passengerData);
         }
+        //Spawn tunnels
+        foreach (var tunnelData in levelData.tunnels)
+        {
+            SpawnTunnel(tunnelData);
+        }
     }
 
     private void CreateCell(Vector2Int gridPos)
@@ -142,6 +130,11 @@ public class GridController : MonoBehaviour
             passenger.Initialize(data, this);
             passengers[gridPos] = passenger;
         }
+    }
+
+    private void SpawnTunnel(TunnelData tunnelData)
+    {
+
     }
 
     public Vector3 GetWorldPosition(Vector2Int gridPosition)
@@ -276,14 +269,6 @@ public class GridController : MonoBehaviour
     private bool IsWalkable(Vector2Int position)
     {
         return IsValidCell(position) && !HasPassenger(position);
-    }
-
-    public bool TryMovePassenger(Passenger passenger, Vector2Int from, Vector2Int to)
-    {
-        if (!IsValidCell(to) || !passengers.ContainsKey(from))
-            return false;
-        passenger.MoveToCell(to);
-        return true;
     }
 
     public void MoveOutPassenger(Vector2Int from)

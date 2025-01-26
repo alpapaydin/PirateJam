@@ -88,19 +88,14 @@ public class Passenger : GridObject
 
     private Color GetColorFromType(PassengerColor type)
     {
-        switch (type)
-        {
-            case PassengerColor.Red: return new Color(1f, 0.2f, 0.2f);
-            case PassengerColor.Green: return new Color(0.2f, 1f, 0.2f);
-            case PassengerColor.Blue: return new Color(0.2f, 0.2f, 1f);
-            case PassengerColor.Purple: return new Color(0.8f, 0.2f, 0.8f);
-            case PassengerColor.Cyan: return new Color(0.2f, 0.8f, 0.8f);
-            default: return UnityEngine.Color.white;
-        }
+        return ColorUtility.GetColorFromType(type);
     }
 
     public void HandleTap()
     {
+        if (!controller.CanInteract)
+            return;
+
         if (isActivated)
             return;
 
@@ -120,7 +115,7 @@ public class Passenger : GridObject
         for (int i = 1; i < path.Count; i++)
         {
             Vector2Int nextPos = path[i];
-            controller.TryMovePassenger(this, gridPosition, nextPos);
+            MoveToCell(nextPos);
             yield return StartCoroutine(AnimateMovement(controller.GetWorldPosition(nextPos), animDuration));
         }
         controller.MovePassengerToBench(this);
@@ -132,38 +127,41 @@ public class Passenger : GridObject
         gridPosition = newPosition;
         StartCoroutine(AnimateMovement(controller.GetWorldPosition(newPosition), animDuration));
     }
-
-    public void MoveTo(Transform transform)
+    public IEnumerator MoveTo(Transform transform)
     {
-        StartCoroutine(AnimateMovement(transform.position, 1));
+        return AnimateMovement(transform.position, 1f);
+    }
+    public IEnumerator JumpTo(Transform transform)
+    {
+        return AnimateMovement(transform.position, 1f, true);
     }
 
-    private IEnumerator AnimateMovement(Vector3 targetPosition, float duration)
+    private IEnumerator AnimateMovement(Vector3 targetPosition, float duration, bool jumpAction = false)
     {
-        animator.SetBool("isRunning", true);
+        if (jumpAction) {
+            animator.SetTrigger("jump");
+            yield return new WaitForSeconds(0.5f);
+        } else {
+            animator.SetBool("isRunning", true);
+        }
         isMoving = true;
         Vector3 startPosition = transform.position;
         float elapsedTime = 0;
-
-        // Calculate rotation to face movement direction
         Vector3 moveDirection = (targetPosition - startPosition);
-        if (moveDirection.sqrMagnitude > 0.001f)  // Only rotate if we're actually moving
+        if (moveDirection.sqrMagnitude > 0.001f)
         {
-            moveDirection.y = 0; // Keep rotation only in XZ plane
+            moveDirection.y = 0;
             Quaternion targetRotation = Quaternion.LookRotation(moveDirection);
             transform.rotation = targetRotation;
         }
-
         while (elapsedTime < duration)
         {
             elapsedTime += Time.deltaTime;
             float t = elapsedTime / duration;
-            // Use smoothstep for smoother movement
             t = t * t * (3f - 2f * t);
             transform.position = Vector3.Lerp(startPosition, targetPosition, t);
             yield return null;
         }
-
         transform.position = targetPosition;
         isMoving = false;
         animator.SetBool("isRunning", false);

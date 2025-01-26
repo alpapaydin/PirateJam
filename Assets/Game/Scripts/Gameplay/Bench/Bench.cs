@@ -44,7 +44,20 @@ public class Bench : MonoBehaviour
                 return slot.transform;
             }
         }
-        return null; // No available slots
+        return null;
+    }
+
+    public List<BenchSlot> GetOccupiedSlots()
+    {
+        List<BenchSlot> occupiedSlots = new List<BenchSlot>();
+        foreach (BenchSlot slot in slots)
+        {
+            if (slot.IsOccupied)
+            {
+                occupiedSlots.Add(slot);
+            }
+        }
+        return occupiedSlots;
     }
 
     public void ClearSlot(int slotId)

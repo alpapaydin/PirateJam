@@ -8,6 +8,7 @@ public class BenchSlot : MonoBehaviour
 
     public int SlotId => slotId;
     public bool IsOccupied => isOccupied;
+    public Passenger Passenger => passenger;
 
     public void Initialize(int id)
     {

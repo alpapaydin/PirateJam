@@ -109,10 +109,10 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2655096342686555726}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: 0.7071068, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 0.33, y: -0.82, z: 7.75}
-  m_LocalScale: {x: 0.6999999, y: 0.7, z: 0.6999999}
-  m_ConstrainProportionsScale: 1
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4149543248698459712}
   - {fileID: 203332265787430504}
@@ -120,7 +120,7 @@ Transform:
   - {fileID: 5769086789335396520}
   - {fileID: 1363930362381513648}
   m_Father: {fileID: 4016590457816191386}
-  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &3105996438390782798
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -465,6 +465,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 935d813f7176b7045850d2505b234dee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  shipMeshRenderers:
+  - {fileID: 8311433336081880184}
+  - {fileID: 5792307945030460625}
+  - {fileID: 1361947582245555363}
+  - {fileID: 3764908722385845206}
+  - {fileID: 2596375700392020467}
 --- !u!1 &8206284761219435899
 GameObject:
   m_ObjectHideFlags: 0
