@@ -90,6 +90,8 @@ public class Passenger : GridObject
 
     private void HandleTap()
     {
+        if (controller.LevelController.GameState != GameState.Playing)
+            return;
         if (!TryActivate())
         {
             animator.SetTrigger("wave");

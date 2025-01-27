@@ -3,6 +3,10 @@ using UnityEngine.UIElements;
 
 public class UIController : MonoBehaviour
 {
+    [SerializeField] private Canvas gameCanvas;
+    [SerializeField] private GameObject winPopupPrefab;
+    [SerializeField] private GameObject losePopupPrefab;
+    private GameObject activePopup;
     private UIDocument document;
     private Label levelText;
     private Label timerText;
@@ -43,5 +47,24 @@ public class UIController : MonoBehaviour
                 timerText.style.scale = originalScale;
             }
         }
+    }
+
+    public void LevelWon()
+    {
+        if (activePopup != null) Destroy(activePopup);
+        HideHUD();
+        activePopup = Instantiate(winPopupPrefab, gameCanvas.transform);
+    }
+
+    public void LevelFailed()
+    {
+        if (activePopup != null) Destroy(activePopup);
+        HideHUD();
+        activePopup = Instantiate(losePopupPrefab, gameCanvas.transform);
+    }
+
+    public void HideHUD()
+    {
+        document.rootVisualElement.style.opacity = 0;
     }
 }

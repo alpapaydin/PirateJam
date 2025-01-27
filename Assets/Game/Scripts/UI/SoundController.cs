@@ -47,7 +47,6 @@ public class SoundController : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject);
             InitializeSoundSystem();
         }
         else
