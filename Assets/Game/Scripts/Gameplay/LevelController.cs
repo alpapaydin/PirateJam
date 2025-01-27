@@ -180,13 +180,11 @@ public class LevelController : MonoBehaviour
 
     private void LevelWon() 
     {
-        print("won");
         gameState = GameState.Won;
         uiController.LevelWon();
     }
     private void LevelFailed() 
     {
-        print("failed");
         gameState = GameState.Failed;
         uiController.LevelFailed();
     }
