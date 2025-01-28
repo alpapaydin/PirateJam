@@ -184,7 +184,7 @@ public class Passenger : GridObject
     {
         yield return MoveTo(assignedBenchSlot.transform);
         assignedBenchSlot.PassengerArrived(this);
-        controller.LevelController.PassengerArrivedToBench(this);
+        controller.LevelController.PassengerArrivedToBench(this, assignedBenchSlot);
     }
 
     private bool CanActivate()

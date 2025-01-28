@@ -1,7 +1,9 @@
-# Pirate Jam
+# 🌴 Pirate Jam 🌴
 A puzzle game where players organize passengers into matching colored ships.
 
 <img src="preview.png" alt="Preview" width="400"/>
+
+(9:16 Mobile Portrait aspect is recommended.)
 
 ## Core Gameplay
 - Move passengers to their matching colored ships

@@ -43,6 +43,14 @@ PrefabInstance:
       value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 96407863504342319, guid: b4d8fc55c6520ff438003e6b3c8da940, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 8389862783002122149, guid: 8bd0b9906dd7f8c4bb0cbdb037a744ce, type: 2}
+    - target: {fileID: 96407863504342319, guid: b4d8fc55c6520ff438003e6b3c8da940, type: 3}
+      propertyPath: m_fontColor32.rgba
+      value: 4288861906
+      objectReference: {fileID: 0}
+    - target: {fileID: 96407863504342319, guid: b4d8fc55c6520ff438003e6b3c8da940, type: 3}
       propertyPath: m_hasFontAssetChanged
       value: 1
       objectReference: {fileID: 0}
@@ -69,6 +77,10 @@ PrefabInstance:
     - target: {fileID: 96407863504342319, guid: b4d8fc55c6520ff438003e6b3c8da940, type: 3}
       propertyPath: m_fontColorGradient.bottomRight.r
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 231241121673916335, guid: b4d8fc55c6520ff438003e6b3c8da940, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 36
       objectReference: {fileID: 0}
     - target: {fileID: 1915917909225865202, guid: b4d8fc55c6520ff438003e6b3c8da940, type: 3}
       propertyPath: m_Name

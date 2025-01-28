@@ -105,8 +105,9 @@ public class LevelController : MonoBehaviour
             LevelWon();
     }
 
-    public void PassengerArrivedToBench(Passenger passenger)
+    public void PassengerArrivedToBench(Passenger passenger, BenchSlot slot)
     {
+        TryBoardBenchPassengerAtSlot(slot);
         if (bench.IsFull())
             EvaluateLoseCondition();
     }
@@ -142,11 +143,17 @@ public class LevelController : MonoBehaviour
         foreach (BenchSlot slot in occupiedSlots)
         {
             if (slot.Passenger == null) continue;
-            if (TryAssignToShip(slot.Passenger))
-            {
-                StartCoroutine(BoardPassenger(slot.Passenger));
-                slot.ClearSlot();
-            }
+            if (slot.Passenger.IsMoving) continue;
+            TryBoardBenchPassengerAtSlot(slot);
+        }
+    }
+
+    private void TryBoardBenchPassengerAtSlot(BenchSlot slot)
+    {
+        if (TryAssignToShip(slot.Passenger))
+        {
+            StartCoroutine(BoardPassenger(slot.Passenger));
+            slot.ClearSlot();
         }
     }
 
