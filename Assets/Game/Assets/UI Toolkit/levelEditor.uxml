@@ -2,7 +2,7 @@
     <Style src="project://database/Assets/Game/Assets/UI%20Toolkit/EditorStylesheet.uss?fileID=7433441132597879392&amp;guid=3e79c1ed27449994f90eacb0a85d4f7e&amp;type=3#EditorStylesheet" />
     <ui:VisualElement style="flex-grow: 1; align-items: stretch; justify-content: flex-start; align-self: auto;">
         <ui:VisualElement name="TopContainer" style="flex-grow: 0; flex-shrink: 1; justify-content: center; align-items: auto; flex-direction: column; align-self: auto; background-color: rgba(0, 0, 0, 0.39); font-size: 18px; color: rgb(255, 255, 255); -unity-text-outline-width: 0.5px;">
-            <ui:DropdownField index="-1" choices="System.Collections.Generic.List`1[System.String]" name="LevelSelector" style="justify-content: center; align-self: auto; height: auto; align-items: auto; flex-grow: 1; overflow: visible; flex-shrink: 1;" />
+            <ui:DropdownField index="-1" choices="System.Collections.Generic.List`1[System.String]" name="LevelSelector" class="smalltext" style="justify-content: center; align-self: auto; height: auto; align-items: auto; flex-grow: 1; overflow: visible; flex-shrink: 1;" />
             <ui:VisualElement name="HBox" style="flex-grow: 1; flex-direction: row; justify-content: center; align-self: center; height: 15%; max-height: 15%;">
                 <ui:Button text="Add" parse-escape-sequences="true" display-tooltip-when-elided="true" name="AddButton" class="text button" />
                 <ui:Button text="Remove" parse-escape-sequences="true" display-tooltip-when-elided="true" name="RemoveButton" class="text button" />
