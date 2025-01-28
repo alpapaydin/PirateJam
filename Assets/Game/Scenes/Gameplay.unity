@@ -1237,7 +1237,7 @@ Transform:
   m_GameObject: {fileID: 1263709508}
   serializedVersion: 2
   m_LocalRotation: {x: 0.5, y: -0.5, z: -0.5, w: 0.5}
-  m_LocalPosition: {x: -0.00623, y: 0, z: -0.00133}
+  m_LocalPosition: {x: -0.00638, y: 0, z: -0.00186}
   m_LocalScale: {x: 0.001472754, y: 0.001, z: 0.002}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1634,7 +1634,7 @@ MonoBehaviour:
   bench: {fileID: 824725819}
   shipController: {fileID: 372578922}
   uiController: {fileID: 1101212884}
-  boardingXOffsetRange: 1
+  boardingXOffsetRange: 1.2
   boardAnchor: {fileID: 322501001}
   shipAnchor: {fileID: 1263709509}
 --- !u!4 &1710998138

@@ -57,12 +57,9 @@ public class Ship : MonoBehaviour
     {
         boardedCount++;
         countText.gameObject.SetActive(true);
-        countText.text = boardedCount.ToString();
+        countText.text = boardedCount.ToString() + "/" + Data.capacity.ToString();
+        countText.color = Color.Lerp(Color.white, Color.green, (float)boardedCount/(float)Data.capacity);
         UpdateVisuals(boardedCount);
-
-        string result = Mathf.Clamp(boardedCount, 1, 3).ToString();
-        SoundController.Instance.PlaySound("bloop" + result);
-
         if (boardedCount >= Data.capacity)
             DepartShip();
     }
@@ -70,10 +67,29 @@ public class Ship : MonoBehaviour
     private void UpdateVisuals(int count) { }
     private void DepartShip()
     {
-        countText.gameObject.SetActive(false);
         StartJet();
+        StartCoroutine(AnimateText());
         StartCoroutine(SpawnPopParticleRoutine());
         controller.ProcessShipQueue();
+        Game.Sound.PlaySound("bloop3");
+    }
+    private IEnumerator AnimateText()
+    {
+        float originalSize = countText.fontSize;
+        float elapsedTime = 0f;
+        float duration = 1f;
+        while (elapsedTime < duration)
+        {
+            elapsedTime += Time.deltaTime;
+            float progress = elapsedTime / duration;
+            float mainSize = Mathf.Lerp(originalSize, 0f, progress);
+            float bounceAmount = 0.2f * (1f - progress);
+            float bounce = 1f + (bounceAmount * Mathf.Sin(progress * Mathf.PI * 6));
+            countText.fontSize = mainSize * bounce;
+            yield return null;
+        }
+        countText.fontSize = 0f;
+        countText.gameObject.SetActive(false);
     }
 
     public void StartJet()

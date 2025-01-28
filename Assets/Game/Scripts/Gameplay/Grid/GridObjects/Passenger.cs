@@ -194,9 +194,9 @@ public class Passenger : GridObject
         return true;
     }
 
-    public IEnumerator MoveTo(Transform transform)
+    public IEnumerator MoveTo(Transform transform, float time = 1f)
     {
-        return AnimateMovement(transform.position, 1f);
+        return AnimateMovement(transform.position, time);
     }
 
     public IEnumerator JumpTo(Transform transform)

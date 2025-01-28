@@ -10,7 +10,7 @@ public class LevelController : MonoBehaviour
     [SerializeField] private ShipController shipController;
     [SerializeField] private UIController uiController;
 
-    [SerializeField] private float boardingXOffsetRange = 1f;
+    [SerializeField] private float boardingXOffsetRange = 5f;
     [SerializeField] private Transform boardAnchor;
     [SerializeField] private Transform shipAnchor;
     public GameState GameState => gameState;
@@ -150,15 +150,22 @@ public class LevelController : MonoBehaviour
         }
     }
 
-    private Transform CreateOffsetAnchor(Transform baseTransform, float xOffsetRange)
+    private Transform CreateAnchorOnRadius(Transform baseTransform, float radius, Vector3 passengerPosition)
     {
-        Vector3 newPosition = baseTransform.position;
-        newPosition.x += Random.Range(-xOffsetRange, xOffsetRange);
-
-        GameObject tempAnchor = new GameObject($"TempAnchor_{baseTransform.name}");
-        tempAnchor.transform.position = newPosition;
-
-        return tempAnchor.transform;
+        Vector3 directionToPlayer = (passengerPosition - baseTransform.position);
+        float distanceToPlayer = directionToPlayer.magnitude;
+        Vector3 desiredPosition;
+        if (distanceToPlayer > radius)
+        {
+            desiredPosition = baseTransform.position + (directionToPlayer.normalized * radius);
+        }
+        else
+        {
+            desiredPosition = passengerPosition;
+        }
+        GameObject anchor = new GameObject("RadiusAnchor");
+        anchor.transform.position = desiredPosition;
+        return anchor.transform;
     }
 
     public IEnumerator BoardPassenger(Passenger passenger)
@@ -166,10 +173,13 @@ public class LevelController : MonoBehaviour
         Ship ship = shipController.GetDockedShip();
         if (ship == null || passenger == null)
             yield return null;
-        Transform tempAnchor = CreateOffsetAnchor(boardAnchor, boardingXOffsetRange);
-        yield return passenger.MoveTo(tempAnchor);
-        Game.Sound.PlaySound("bloop2");
+        Transform tempAnchor = CreateAnchorOnRadius(boardAnchor, boardingXOffsetRange, passenger.transform.position);
+        if (tempAnchor.position != passenger.transform.position)
+        {
+            yield return passenger.MoveTo(tempAnchor, 0.5f);
+        }
         Destroy(tempAnchor.gameObject);
+        Game.Sound.PlaySound("bloop2");
         yield return passenger.JumpTo(shipAnchor);
         ship.PassengerBoarded();
         bench.ClearSlotForPassenger(passenger);
