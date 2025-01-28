@@ -139,6 +139,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &394287078 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7351415372799863575, guid: 7bbd47f9471c3a347a730092521e71a9, type: 3}
+  m_PrefabInstance: {fileID: 2080670586}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &402373269
 GameObject:
   m_ObjectHideFlags: 0
@@ -237,9 +242,9 @@ RectTransform:
   m_Children:
   - {fileID: 2064145408}
   - {fileID: 1119619221}
+  - {fileID: 43542849}
   - {fileID: 446813877}
   - {fileID: 1542048488}
-  - {fileID: 43542849}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -281,6 +286,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buttonText: {fileID: 373238696}
+  resetButton: {fileID: 394287078}
 --- !u!224 &446813877 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 2899179366791321827, guid: 7bbd47f9471c3a347a730092521e71a9, type: 3}
@@ -1148,11 +1154,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2899179366791321827, guid: 7bbd47f9471c3a347a730092521e71a9, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 0
+      value: 463.69
       objectReference: {fileID: 0}
     - target: {fileID: 2899179366791321827, guid: 7bbd47f9471c3a347a730092521e71a9, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 0
+      value: 230.85
       objectReference: {fileID: 0}
     - target: {fileID: 2899179366791321827, guid: 7bbd47f9471c3a347a730092521e71a9, type: 3}
       propertyPath: m_LocalScale.x
@@ -1200,7 +1206,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2899179366791321827, guid: 7bbd47f9471c3a347a730092521e71a9, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -1118
+      value: -418
       objectReference: {fileID: 0}
     - target: {fileID: 2899179366791321827, guid: 7bbd47f9471c3a347a730092521e71a9, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -1220,23 +1226,27 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5121628102216175911, guid: 7bbd47f9471c3a347a730092521e71a9, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5121628102216175911, guid: 7bbd47f9471c3a347a730092521e71a9, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5121628102216175911, guid: 7bbd47f9471c3a347a730092521e71a9, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 231.845
       objectReference: {fileID: 0}
     - target: {fileID: 5121628102216175911, guid: 7bbd47f9471c3a347a730092521e71a9, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -115.425
       objectReference: {fileID: 0}
     - target: {fileID: 7351415372799863575, guid: 7bbd47f9471c3a347a730092521e71a9, type: 3}
       propertyPath: m_Name
       value: ResetButton
+      objectReference: {fileID: 0}
+    - target: {fileID: 7351415372799863575, guid: 7bbd47f9471c3a347a730092521e71a9, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

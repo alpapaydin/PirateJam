@@ -4,6 +4,7 @@ using UnityEngine;
 public class StartScreen : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI buttonText;
+    [SerializeField] private GameObject resetButton;
 
     private void Start()
     {
@@ -13,6 +14,9 @@ public class StartScreen : MonoBehaviour
     private void SetLevelText()
     {
         buttonText.text = "Level " + Game.Manager.CurrentLevel.ToString();
+        if (Game.Manager.CurrentLevel > 1)
+            resetButton.SetActive(true);
+        else resetButton.SetActive(false);
     }
 
     public void LevelButtonClicked()
