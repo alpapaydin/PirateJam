@@ -52,6 +52,7 @@ public class LevelController : MonoBehaviour
         uiController.SetTimerText(currentTime);
         grid.InitializeGrid(levelData, this);
         shipController.InitializeShipSpawner(levelData);
+        bench.InitializeSlots(levelData.benchSlots);
     }
 
     private IEnumerator TimerCoroutine()
@@ -203,12 +204,14 @@ public class LevelController : MonoBehaviour
 
     private void LevelWon() 
     {
+        if (gameState != GameState.Playing) return;
         gameState = GameState.Won;
         Game.Manager.CompleteLevel(currentLevel);
         uiController.LevelWon();
     }
     private void LevelFailed() 
     {
+        if (gameState != GameState.Playing) return;
         gameState = GameState.Failed;
         uiController.LevelFailed();
     }

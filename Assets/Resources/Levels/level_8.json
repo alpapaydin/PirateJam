@@ -1,100 +1,109 @@
 {
-    "levelNumber": 5,
+    "levelNumber": 8,
     "gridSize": {
-        "x": 6,
-        "y": 7
+        "x": 5,
+        "y": 9
     },
     "invalidCells": [
         {
             "x": 0,
-            "y": 0
+            "y": 1
         },
         {
-            "x": 5,
-            "y": 0
+            "x": 1,
+            "y": 1
         },
         {
-            "x": 2,
+            "x": 3,
+            "y": 1
+        },
+        {
+            "x": 4,
+            "y": 1
+        },
+        {
+            "x": 0,
+            "y": 3
+        },
+        {
+            "x": 1,
             "y": 3
         },
         {
             "x": 3,
             "y": 3
+        },
+        {
+            "x": 4,
+            "y": 3
+        },
+        {
+            "x": 0,
+            "y": 5
+        },
+        {
+            "x": 1,
+            "y": 5
+        },
+        {
+            "x": 3,
+            "y": 5
+        },
+        {
+            "x": 4,
+            "y": 5
+        },
+        {
+            "x": 0,
+            "y": 7
+        },
+        {
+            "x": 4,
+            "y": 7
         }
     ],
     "passengers": [
         {
-            "x": 1,
-            "y": 5,
-            "color": 0,
-            "isHidden": false
-        },
-        {
             "x": 2,
-            "y": 5,
-            "color": 0,
-            "isHidden": true
-        },
-        {
-            "x": 4,
-            "y": 5,
+            "y": 7,
             "color": 0,
             "isHidden": false
         },
         {
             "x": 1,
-            "y": 4,
+            "y": 6,
             "color": 1,
-            "isHidden": false
-        },
-        {
-            "x": 4,
-            "y": 4,
-            "color": 1,
-            "isHidden": true
-        },
-        {
-            "x": 1,
-            "y": 2,
-            "color": 1,
-            "isHidden": true
-        },
-        {
-            "x": 4,
-            "y": 2,
-            "color": 2,
-            "isHidden": true
-        },
-        {
-            "x": 2,
-            "y": 1,
-            "color": 2,
             "isHidden": false
         },
         {
             "x": 3,
-            "y": 1,
+            "y": 6,
             "color": 2,
             "isHidden": false
+        },
+        {
+            "x": 2,
+            "y": 4,
+            "color": 0,
+            "isHidden": true
+        },
+        {
+            "x": 2,
+            "y": 2,
+            "color": 1,
+            "isHidden": true
+        },
+        {
+            "x": 1,
+            "y": 0,
+            "color": 2,
+            "isHidden": true
         }
     ],
     "tunnels": [
         {
-            "x": 0,
-            "y": 3,
-            "orientation": 1,
-            "passengers": [
-                {
-                    "color": 0
-                },
-                {
-                    "color": 2
-                }
-            ]
-        },
-        {
-            "x": 5,
-            "y": 3,
+            "x": 2,
+            "y": 8,
             "orientation": 0,
             "passengers": [
                 {
@@ -102,6 +111,9 @@
                 },
                 {
                     "color": 0
+                },
+                {
+                    "color": 1
                 }
             ]
         }
@@ -124,5 +136,5 @@
         }
     ],
     "timeLimit": 20.0,
-    "benchSlots": 4
+    "benchSlots": 3
 }

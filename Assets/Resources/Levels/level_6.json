@@ -1,45 +1,116 @@
 {
     "levelNumber": 6,
-    "gridSize": { "x": 6, "y": 8 },
+    "gridSize": {
+        "x": 6,
+        "y": 8
+    },
     "invalidCells": [
-        { "x": 2, "y": 4 },
-        { "x": 3, "y": 4 },
-        { "x": 2, "y": 2 },
-        { "x": 3, "y": 2 }
+        {
+            "x": 2,
+            "y": 4
+        },
+        {
+            "x": 3,
+            "y": 4
+        },
+        {
+            "x": 2,
+            "y": 2
+        },
+        {
+            "x": 3,
+            "y": 2
+        }
     ],
     "passengers": [
-        { "x": 1, "y": 6, "color": 0, "isHidden": false },
-        { "x": 4, "y": 6, "color": 0, "isHidden": false },
-        { "x": 1, "y": 5, "color": 1, "isHidden": false },
-        { "x": 4, "y": 5, "color": 1, "isHidden": false },
-        { "x": 1, "y": 3, "color": 2, "isHidden": true },
-        { "x": 4, "y": 3, "color": 2, "isHidden": true }
+        {
+            "x": 1,
+            "y": 6,
+            "color": 0,
+            "isHidden": false
+        },
+        {
+            "x": 4,
+            "y": 6,
+            "color": 0,
+            "isHidden": false
+        },
+        {
+            "x": 1,
+            "y": 5,
+            "color": 1,
+            "isHidden": false
+        },
+        {
+            "x": 4,
+            "y": 5,
+            "color": 1,
+            "isHidden": false
+        },
+        {
+            "x": 1,
+            "y": 3,
+            "color": 2,
+            "isHidden": true
+        },
+        {
+            "x": 4,
+            "y": 3,
+            "color": 2,
+            "isHidden": true
+        }
     ],
     "tunnels": [
         {
-            "x": 0, "y": 1,
+            "x": 0,
+            "y": 1,
             "orientation": 1,
             "passengers": [
-                { "color": 0 },
-                { "color": 1 },
-                { "color": 2 }
+                {
+                    "color": 0
+                },
+                {
+                    "color": 1
+                },
+                {
+                    "color": 2
+                }
             ]
         },
         {
-            "x": 5, "y": 1,
+            "x": 5,
+            "y": 1,
             "orientation": 3,
             "passengers": [
-                { "color": 0 },
-                { "color": 1 },
-                { "color": 2 }
+                {
+                    "color": 0
+                },
+                {
+                    "color": 1
+                },
+                {
+                    "color": 2
+                }
             ]
         }
     ],
     "busSequence": [
-        { "color": 0, "arrivalOrder": 0, "capacity": 3 },
-        { "color": 1, "arrivalOrder": 1, "capacity": 3 },
-        { "color": 2, "arrivalOrder": 2, "capacity": 3 }
+        {
+            "color": 0,
+            "arrivalOrder": 0,
+            "capacity": 3
+        },
+        {
+            "color": 1,
+            "arrivalOrder": 1,
+            "capacity": 3
+        },
+        {
+            "color": 2,
+            "arrivalOrder": 2,
+            "capacity": 3
+        }
     ],
-    "timeLimit": 180.0,
+    "timeLimit": 20.0,
     "benchSlots": 5
 }

@@ -6,7 +6,6 @@ using UnityEngine;
 public class Bench : MonoBehaviour
 {
     [SerializeField] private float slotSpacing = 1.5f;
-    [SerializeField] private int maxSlots = 5;
     [SerializeField] private GameObject benchSlotPrefab;
     [SerializeField] private Transform slotsParent;
 
@@ -15,10 +14,9 @@ public class Bench : MonoBehaviour
     private void Awake()
     {
         slots = new List<BenchSlot>();
-        InitializeSlots();
     }
 
-    private void InitializeSlots()
+    public void InitializeSlots(int maxSlots = 5)
     {
         float totalWidth = (maxSlots - 1) * slotSpacing;
         float startX = -totalWidth / 2f;
@@ -28,7 +26,6 @@ public class Bench : MonoBehaviour
             GameObject slotObject = Instantiate(benchSlotPrefab, slotsParent);
             Vector3 position = new Vector3(startX + (i * slotSpacing), 0f, 0f);
             slotObject.transform.localPosition = position;
-
             BenchSlot slot = slotObject.GetComponent<BenchSlot>();
             slot.Initialize(i);
             slots.Add(slot);

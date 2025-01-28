@@ -45,7 +45,7 @@
                 <ui:Button text="Size" parse-escape-sequences="true" display-tooltip-when-elided="true" name="SizeButton" class="text" />
             </ui:VisualElement>
         </ui:VisualElement>
-        <ui:VisualElement name="Popups" style="flex-grow: 1; position: absolute; left: auto; width: 100%; height: 100%; top: auto;">
+        <ui:VisualElement name="Popups" style="flex-grow: 1; position: absolute; left: auto; width: 100%; height: 100%; top: auto; background-color: rgba(0, 0, 0, 0.29);">
             <ui:VisualElement name="SizeEditPopup" style="flex-grow: 0; width: 90%; align-items: stretch; height: auto; align-self: center; justify-content: center; top: 25%; background-color: rgba(0, 0, 0, 0.54); border-top-left-radius: 15px; border-top-right-radius: 15px; border-bottom-right-radius: 15px; border-bottom-left-radius: 15px; border-top-width: 3px; border-right-width: 3px; border-bottom-width: 3px; border-left-width: 3px; border-left-color: rgba(255, 255, 255, 0.6); border-right-color: rgba(255, 255, 255, 0.6); border-top-color: rgba(255, 255, 255, 0.6); border-bottom-color: rgba(255, 255, 255, 0.6); transition-property: opacity; transition-duration: 0.7s; transition-timing-function: ease-out; opacity: 1;">
                 <ui:VisualElement name="Controls" style="flex-grow: 1; margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; align-items: stretch;">
                     <ui:Label tabindex="-1" text="Width" parse-escape-sequences="true" display-tooltip-when-elided="true" class="text" style="align-items: center; -unity-text-align: upper-center;" />
@@ -74,6 +74,12 @@
                         <ui:Button text="Apply" parse-escape-sequences="true" display-tooltip-when-elided="true" name="ApplyShipsButton" class="smalltext" style="flex-grow: 0.2; align-items: center; align-self: center; justify-content: center;" />
                         <ui:Button text="Back" parse-escape-sequences="true" display-tooltip-when-elided="true" name="BackShipsButton" class="smalltext" style="flex-grow: 0.2; align-items: center; align-self: center; justify-content: center;" />
                     </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement name="SaveFailedPopup" style="flex-grow: 0; width: 90%; align-items: stretch; height: auto; align-self: center; justify-content: center; top: 25%; background-color: rgba(0, 0, 0, 0.54); border-top-left-radius: 15px; border-top-right-radius: 15px; border-bottom-right-radius: 15px; border-bottom-left-radius: 15px; border-top-width: 3px; border-right-width: 3px; border-bottom-width: 3px; border-left-width: 3px; border-left-color: rgba(255, 255, 255, 0.6); border-right-color: rgba(255, 255, 255, 0.6); border-top-color: rgba(255, 255, 255, 0.6); border-bottom-color: rgba(255, 255, 255, 0.6); transition-property: opacity; transition-duration: 0.7s; transition-timing-function: ease-out; opacity: 1;">
+                <ui:VisualElement name="SaveFailedControls" style="flex-grow: 1; margin-top: 15px; margin-right: 15px; margin-bottom: 15px; margin-left: 15px; align-items: stretch;">
+                    <ui:Label tabindex="-1" text="Save Status" parse-escape-sequences="true" display-tooltip-when-elided="true" name="SaveFailedText" class="smalltext" style="-unity-text-align: upper-center;" />
+                    <ui:Button text="OK" parse-escape-sequences="true" display-tooltip-when-elided="true" name="CloseSaveFailed" class="smalltext" />
                 </ui:VisualElement>
             </ui:VisualElement>
         </ui:VisualElement>

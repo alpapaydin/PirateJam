@@ -874,7 +874,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1436702404}
   m_Layer: 0
-  m_Name: Game
+  m_Name: Editor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1070,6 +1070,7 @@ MonoBehaviour:
   levelSelection: {fileID: 9197481963319205126, guid: 77e3893501376854ca605b17e9c862bb, type: 3}
   levelEditing: {fileID: 9197481963319205126, guid: 53a269a6d6f23f543923862e74b33196, type: 3}
   grid: {fileID: 2058702910}
+  errorsToSkip: 04000000
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

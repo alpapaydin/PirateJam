@@ -1,22 +1,109 @@
 {
     "levelNumber": 2,
-    "gridSize": { "x": 5, "y": 5 },
+    "gridSize": {
+        "x": 6,
+        "y": 7
+    },
     "invalidCells": [
-        { "x": 2, "y": 2 }
+        {
+            "x": 2,
+            "y": 3
+        },
+        {
+            "x": 3,
+            "y": 3
+        },
+        {
+            "x": 0,
+            "y": 5
+        },
+        {
+            "x": 5,
+            "y": 5
+        }
     ],
     "passengers": [
-        { "x": 1, "y": 3, "color": 0, "isHidden": false },
-        { "x": 3, "y": 3, "color": 0, "isHidden": false },
-        { "x": 1, "y": 1, "color": 0, "isHidden": false },
-        { "x": 3, "y": 4, "color": 1, "isHidden": false },
-        { "x": 2, "y": 3, "color": 1, "isHidden": false },
-        { "x": 3, "y": 1, "color": 1, "isHidden": false }
+        {
+            "x": 2,
+            "y": 5,
+            "color": 0,
+            "isHidden": false
+        },
+        {
+            "x": 3,
+            "y": 5,
+            "color": 1,
+            "isHidden": false
+        },
+        {
+            "x": 1,
+            "y": 4,
+            "color": 2,
+            "isHidden": false
+        },
+        {
+            "x": 4,
+            "y": 4,
+            "color": 0,
+            "isHidden": true
+        },
+        {
+            "x": 2,
+            "y": 2,
+            "color": 1,
+            "isHidden": true
+        },
+        {
+            "x": 3,
+            "y": 2,
+            "color": 2,
+            "isHidden": true
+        },
+        {
+            "x": 1,
+            "y": 1,
+            "color": 0,
+            "isHidden": true
+        },
+        {
+            "x": 4,
+            "y": 1,
+            "color": 2,
+            "isHidden": true
+        }
     ],
-    "tunnels": [],
+    "tunnels": [
+        {
+            "x": 0,
+            "y": 2,
+            "orientation": 1,
+            "passengers": [
+                {
+                    "color": 1
+                },
+                {
+                    "color": 0
+                }
+            ]
+        }
+    ],
     "busSequence": [
-        { "color": 0, "arrivalOrder": 0, "capacity": 3 },
-        { "color": 1, "arrivalOrder": 1, "capacity": 3 }
+        {
+            "color": 0,
+            "arrivalOrder": 0,
+            "capacity": 3
+        },
+        {
+            "color": 1,
+            "arrivalOrder": 1,
+            "capacity": 3
+        },
+        {
+            "color": 2,
+            "arrivalOrder": 2,
+            "capacity": 3
+        }
     ],
-    "timeLimit": 90.0,
-    "benchSlots": 3
+    "timeLimit": 20.0,
+    "benchSlots": 4
 }

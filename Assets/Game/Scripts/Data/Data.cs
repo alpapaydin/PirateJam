@@ -51,7 +51,7 @@ public class LevelData
     public PassengerData[] passengers;
     public TunnelData[] tunnels;
     public ShipData[] busSequence;
-    public float timeLimit = 60f;
+    public float timeLimit = 30f;
     public int benchSlots = 5;
 }
 

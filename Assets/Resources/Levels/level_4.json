@@ -73,6 +73,6 @@
             "capacity": 3
         }
     ],
-    "timeLimit": 120.0,
-    "benchSlots": 3
+    "timeLimit": 30.0,
+    "benchSlots": 5
 }

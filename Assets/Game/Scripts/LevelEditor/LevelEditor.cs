@@ -10,6 +10,8 @@ public class LevelEditor : MonoBehaviour
     [SerializeField] private VisualTreeAsset levelSelection;
     [SerializeField] private VisualTreeAsset levelEditing;
     [SerializeField] private EditorGridController grid;
+    [SerializeField] private List<LevelValidator.ValidationError> errorsToSkip = new List<LevelValidator.ValidationError>();
+
 
     //Selection
     private DropdownField levelSelector;
@@ -26,9 +28,11 @@ public class LevelEditor : MonoBehaviour
     // Editing mode fields
     private Button backToSelectionButton;
     private Button saveButton;
+    private VisualElement saveFailedPopup;
+    private Label saveFailedText;
+    private Button closeSaveFailedButton;
     private Button configButton;
     private Label tilePosText;
-    private IntegerField timeLimitField;
     private VisualElement tunnelOptions;
     private VisualElement passengerOptions;
     private EnumField passengerColorSelector;
@@ -49,7 +53,6 @@ public class LevelEditor : MonoBehaviour
     private SliderInt heightSlider;
     private Button applySizeButton;
     private Button backSizeButton;
-
     private DropdownField shipSelector;
     private Button removeShipButton;
     private EnumField shipColorSelector;
@@ -84,10 +87,7 @@ public class LevelEditor : MonoBehaviour
     void DeleteLevel(string levelName)
     {
         if (string.IsNullOrEmpty(levelName)) return;
-
-        // Find the index of the level being deleted
         int currentIndex = levelSelector.choices.IndexOf(levelName);
-
         string jsonPath = Path.Combine(Application.dataPath, "Resources/Levels", $"{levelName}.json");
         string metaPath = jsonPath + ".meta";
         if (File.Exists(jsonPath))
@@ -116,8 +116,15 @@ public class LevelEditor : MonoBehaviour
         {
             levelNames.Add(level.name);
         }
+        levelNames.Sort((a, b) => {
+            if (int.TryParse(a.Split('_')[1], out int numA) &&
+                int.TryParse(b.Split('_')[1], out int numB))
+            {
+                return numA.CompareTo(numB);
+            }
+            return a.CompareTo(b);
+        });
         levelSelector.choices = levelNames;
-
         if (levelNames.Count > 0)
         {
             if (!string.IsNullOrEmpty(selectLevelName) && levelNames.Contains(selectLevelName))
@@ -133,6 +140,18 @@ public class LevelEditor : MonoBehaviour
             {
                 levelSelector.value = levelNames[0];
             }
+        }
+        if (!string.IsNullOrEmpty(selectLevelName) && levelNames.Contains(selectLevelName))
+        {
+            levelSelector.value = selectLevelName;
+        }
+        else if (levelNames.Count > 0)
+        {
+            levelSelector.value = levelNames[0];
+        }
+        if (!string.IsNullOrEmpty(levelSelector.value))
+        {
+            LoadLevel(levelSelector.value);
         }
     }
 
@@ -165,14 +184,35 @@ public class LevelEditor : MonoBehaviour
         if (string.IsNullOrEmpty(currentLevelName)) return;
 
         currentLevel = grid.GetLevelData();
-
-        string jsonData = JsonUtility.ToJson(currentLevel, true);
-        string path = Path.Combine(Application.dataPath, "Resources/Levels", $"{currentLevelName}.json");
-        File.WriteAllText(path, jsonData);
+        var (canSave, message) = LevelValidator.ValidateLevelDataWithMessage(currentLevel, errorsToSkip);
+        if (canSave)
+        {
+            string jsonData = JsonUtility.ToJson(currentLevel, true);
+            string path = Path.Combine(Application.dataPath, "Resources/Levels", $"{currentLevelName}.json");
+            File.WriteAllText(path, jsonData);
 
 #if UNITY_EDITOR
-        UnityEditor.AssetDatabase.Refresh();
+            UnityEditor.AssetDatabase.Refresh();
 #endif
+            ShowSaveStatusPopup(true, "Successfully Saved!");
+        }
+        else
+        {
+            ShowSaveStatusPopup(false, message);
+        }
+    }
+
+    private void ShowSaveStatusPopup(bool success, string message)
+    {
+        HidePopups();
+        popupsPanel.style.display = DisplayStyle.Flex;
+        saveFailedPopup.style.display = DisplayStyle.Flex;
+        saveFailedText.text = success ? "Successfully Saved!" : $"Save Failed:\n{message}";
+    }
+
+    private void HideSaveStatusPopup()
+    {
+        saveFailedPopup.style.display = DisplayStyle.None;
     }
 
     void OpenLevelSelection(string selectLevelName = null)
@@ -191,27 +231,7 @@ public class LevelEditor : MonoBehaviour
         backToMenuButton = root.Q<Button>("BackToMenuButton");
         confirmationBox.style.opacity = 0;
 
-        var levels = Resources.LoadAll<TextAsset>("Levels");
-        var levelNames = new List<string>();
-        foreach (var level in levels)
-        {
-            levelNames.Add(level.name);
-        }
-        levelSelector.choices = levelNames;
-
-        if (!string.IsNullOrEmpty(selectLevelName) && levelNames.Contains(selectLevelName))
-        {
-            levelSelector.value = selectLevelName;
-        }
-        else if (levelNames.Count > 0)
-        {
-            levelSelector.value = levelNames[0];
-        }
-
-        if (!string.IsNullOrEmpty(levelSelector.value))
-        {
-            LoadLevel(levelSelector.value);
-        }
+        RefreshLevelList(-1, selectLevelName);
 
         addButton.clicked += () =>
         {
@@ -236,7 +256,7 @@ public class LevelEditor : MonoBehaviour
         };
 
         backButton.clicked += HideDeleteConfirmation;
-        backToMenuButton.clicked += Game.Manager.OpenMainMenu;
+        backToMenuButton.clicked += CloseLevelEditor;
 
         levelSelector.RegisterValueChangedCallback(evt =>
         {
@@ -255,13 +275,18 @@ public class LevelEditor : MonoBehaviour
         };
     }
 
+    private void CloseLevelEditor()
+    {
+        LevelValidator.ValidateAllLevels();
+        Game.Manager.OpenMainMenu();
+    }
+
     void OpenLevelEditing(string levelName)
     {
         document.visualTreeAsset = levelEditing;
         var root = document.rootVisualElement;
         backToSelectionButton = root.Q<Button>("BackToSelectionButton");
         saveButton = root.Q<Button>("SaveButton");
-        timeLimitField = root.Q<IntegerField>("TimeLimitField");
         tileOptionsPanel = root.Q<VisualElement>("TileOptionsPanel");
         tunnelOptions = root.Q<VisualElement>("TunnelOptionsPanel");
         passengerOptions = root.Q<VisualElement>("PassengerOptionsPanel");
@@ -275,7 +300,9 @@ public class LevelEditor : MonoBehaviour
         tunnelAddPassenger = root.Q<Button>("AddNewTPassenger");
         tunnelRemovePassenger = root.Q<Button>("RemovePassengerButton");
         tunnelSetColorPassenger = root.Q<Button>("SetTPassengerColor");
-
+        saveFailedPopup = root.Q<VisualElement>("SaveFailedPopup");
+        saveFailedText = root.Q<Label>("SaveFailedText");
+        closeSaveFailedButton = root.Q<Button>("CloseSaveFailed");
         popupsPanel = root.Q<VisualElement>("Popups");
         sizeEditPopup = root.Q<VisualElement>("SizeEditPopup");
         shipEditPopup = root.Q<VisualElement>("ShipEditPopup");
@@ -295,6 +322,7 @@ public class LevelEditor : MonoBehaviour
         shipColorSelector.Init(PassengerColor.Red);
         HidePopups();
 
+        closeSaveFailedButton.clicked += HidePopups;
         sizeButton.clicked += ShowSizeEditor;
         shipsButton.clicked += ShowShipEditor;
         applySizeButton.clicked += ApplySize;
@@ -418,13 +446,14 @@ public class LevelEditor : MonoBehaviour
         popupsPanel.style.display = DisplayStyle.None;
         sizeEditPopup.style.display = DisplayStyle.None;
         shipEditPopup.style.display = DisplayStyle.None;
+        saveFailedPopup.style.display = DisplayStyle.None;
     }
 
     private void ShowSizeEditor()
     {
+        HidePopups();
         popupsPanel.style.display = DisplayStyle.Flex;
         sizeEditPopup.style.display = DisplayStyle.Flex;
-        shipEditPopup.style.display = DisplayStyle.None;
 
         widthSlider.value = currentLevel.gridSize.x;
         heightSlider.value = currentLevel.gridSize.y;
@@ -439,9 +468,9 @@ public class LevelEditor : MonoBehaviour
 
     private void ShowShipEditor()
     {
+        HidePopups();
         popupsPanel.style.display = DisplayStyle.Flex;
         shipEditPopup.style.display = DisplayStyle.Flex;
-        sizeEditPopup.style.display = DisplayStyle.None;
 
         UpdateShipList();
     }
