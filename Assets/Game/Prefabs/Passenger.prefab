@@ -53,6 +53,7 @@ MonoBehaviour:
   canMoveCueThickness: 0.002
   cannotMoveCueThickness: 0.0004
   animator: {fileID: 1118828835615338946}
+  popParticle: {fileID: 51715171001190930, guid: fe00b9c2128af5c4fb1e7a34de5209a7, type: 3}
 --- !u!95 &1118828835615338946
 Animator:
   serializedVersion: 5

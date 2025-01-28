@@ -16,31 +16,32 @@ Shader "Custom/SeaSurface"
         Tags 
         { 
             "RenderType"="Transparent" 
-            "Queue"="Transparent"
+            "Queue"="Transparent-100"
+            "IgnoreProjector"="True"
         }
-
-        Blend SrcAlpha OneMinusSrcAlpha
-        ZWrite Off
-
-        Pass
+        
+        Pass 
         {
+            ZWrite Off
+            Blend SrcAlpha OneMinusSrcAlpha
+            
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
             #include "UnityCG.cginc"
-
+            
             struct appdata
             {
                 float4 vertex : POSITION;
                 float2 uv : TEXCOORD0;
             };
-
+            
             struct v2f
             {
                 float2 uv : TEXCOORD0;
                 float4 vertex : SV_POSITION;
             };
-
+            
             sampler2D _MainTex;
             float4 _MainTex_ST;
             float4 _WaterColor;
@@ -49,21 +50,23 @@ Shader "Custom/SeaSurface"
             float _WaveAmplitude;
             float _WaveFrequency;
             float _WaveBands;
-
+            
             v2f vert (appdata v)
             {
                 v2f o;
-                float wave = sin(v.uv.x * _WaveFrequency + _Time.y * _WaveSpeed);
+                float wave = sin(_WaveFrequency * v.vertex.x + _Time.y * _WaveSpeed);
                 v.vertex.y += wave * _WaveAmplitude;
                 o.vertex = UnityObjectToClipPos(v.vertex);
                 o.uv = TRANSFORM_TEX(v.uv, _MainTex);
                 return o;
             }
-
+            
             fixed4 frag (v2f i) : SV_Target
             {
-                float wave = sin(i.uv.x * _WaveFrequency + _Time.y * _WaveSpeed);
+                float2 continuousUV = i.uv * _WaveFrequency;
+                float wave = sin(continuousUV.x + _Time.y * _WaveSpeed);
                 wave = floor(wave * _WaveBands) / _WaveBands;
+                
                 float4 finalColor = lerp(_WaterColor, _HighlightColor, wave * 0.5 + 0.5);
                 float gradient = 1 - i.uv.y;
                 finalColor = lerp(finalColor, _WaterColor * 0.8, gradient * 0.3);

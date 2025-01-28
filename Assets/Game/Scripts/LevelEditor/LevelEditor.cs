@@ -85,6 +85,9 @@ public class LevelEditor : MonoBehaviour
     {
         if (string.IsNullOrEmpty(levelName)) return;
 
+        // Find the index of the level being deleted
+        int currentIndex = levelSelector.choices.IndexOf(levelName);
+
         string jsonPath = Path.Combine(Application.dataPath, "Resources/Levels", $"{levelName}.json");
         string metaPath = jsonPath + ".meta";
         if (File.Exists(jsonPath))
@@ -101,8 +104,36 @@ public class LevelEditor : MonoBehaviour
         UnityEditor.AssetDatabase.Refresh();
 #endif
 
-        RefreshLevelList();
+        RefreshLevelList(currentIndex);
         HideDeleteConfirmation();
+    }
+
+    void RefreshLevelList(int previousIndex = -1, string selectLevelName = null)
+    {
+        var levels = Resources.LoadAll<TextAsset>("Levels");
+        var levelNames = new List<string>();
+        foreach (var level in levels)
+        {
+            levelNames.Add(level.name);
+        }
+        levelSelector.choices = levelNames;
+
+        if (levelNames.Count > 0)
+        {
+            if (!string.IsNullOrEmpty(selectLevelName) && levelNames.Contains(selectLevelName))
+            {
+                levelSelector.value = selectLevelName;
+            }
+            else if (previousIndex >= 0)
+            {
+                int newIndex = previousIndex > 0 ? previousIndex - 1 : levelNames.Count - 1;
+                levelSelector.value = levelNames[Mathf.Min(newIndex, levelNames.Count - 1)];
+            }
+            else
+            {
+                levelSelector.value = levelNames[0];
+            }
+        }
     }
 
     void CreateLevel(string levelName)
@@ -144,22 +175,7 @@ public class LevelEditor : MonoBehaviour
 #endif
     }
 
-    void RefreshLevelList()
-    {
-        var levels = Resources.LoadAll<TextAsset>("Levels");
-        var levelNames = new List<string>();
-        foreach (var level in levels)
-        {
-            levelNames.Add(level.name);
-        }
-        levelSelector.choices = levelNames;
-        if (levelNames.Count > 0)
-        {
-            levelSelector.value = levelNames[0];
-        }
-    }
-
-    void OpenLevelSelection()
+    void OpenLevelSelection(string selectLevelName = null)
     {
         grid.IsInEditMode = false;
         document.visualTreeAsset = levelSelection;
@@ -174,6 +190,29 @@ public class LevelEditor : MonoBehaviour
         editButton = root.Q<Button>("EditButton");
         backToMenuButton = root.Q<Button>("BackToMenuButton");
         confirmationBox.style.opacity = 0;
+
+        var levels = Resources.LoadAll<TextAsset>("Levels");
+        var levelNames = new List<string>();
+        foreach (var level in levels)
+        {
+            levelNames.Add(level.name);
+        }
+        levelSelector.choices = levelNames;
+
+        if (!string.IsNullOrEmpty(selectLevelName) && levelNames.Contains(selectLevelName))
+        {
+            levelSelector.value = selectLevelName;
+        }
+        else if (levelNames.Count > 0)
+        {
+            levelSelector.value = levelNames[0];
+        }
+
+        if (!string.IsNullOrEmpty(levelSelector.value))
+        {
+            LoadLevel(levelSelector.value);
+        }
+
         addButton.clicked += () =>
         {
             int newLevelNumber = levelSelector.choices.Count + 1;
@@ -201,12 +240,19 @@ public class LevelEditor : MonoBehaviour
 
         levelSelector.RegisterValueChangedCallback(evt =>
         {
-            LoadLevel(evt.newValue);
-            editButton.clicked += () => OpenLevelEditing(evt.newValue);
+            if (!string.IsNullOrEmpty(evt.newValue))
+            {
+                LoadLevel(evt.newValue);
+            }
         });
 
-        RefreshLevelList();
-
+        editButton.clicked += () =>
+        {
+            if (!string.IsNullOrEmpty(levelSelector.value))
+            {
+                OpenLevelEditing(levelSelector.value);
+            }
+        };
     }
 
     void OpenLevelEditing(string levelName)
@@ -269,7 +315,7 @@ public class LevelEditor : MonoBehaviour
         passengerButton.clicked += () => SetTileType(TileType.Passenger);
         tunnelButton.clicked += () => SetTileType(TileType.Tunnel);
         configButton.clicked += () => ShowObjectConfiguration();
-        backToSelectionButton.clicked += OpenLevelSelection;
+        backToSelectionButton.clicked += () => OpenLevelSelection(levelName);
         saveButton.clicked += SaveCurrentLevel;
 
         passengerColorSelector.Init(PassengerColor.Red);

@@ -1,9 +1,12 @@
 using System.Collections;
+using TMPro;
 using UnityEngine;
 public class Ship : MonoBehaviour
 {
     [SerializeField] private MeshRenderer[] shipMeshRenderers;
     [SerializeField] private ParticleSystem waterJet;
+    [SerializeField] private TextMeshPro countText;
+    [SerializeField] private GameObject popParticle;
 
     public ShipData Data { get; private set; }
     public float CurrentT { get; set; }
@@ -53,6 +56,8 @@ public class Ship : MonoBehaviour
     public void PassengerBoarded()
     {
         boardedCount++;
+        countText.gameObject.SetActive(true);
+        countText.text = boardedCount.ToString();
         UpdateVisuals(boardedCount);
 
         string result = Mathf.Clamp(boardedCount, 1, 3).ToString();
@@ -65,7 +70,9 @@ public class Ship : MonoBehaviour
     private void UpdateVisuals(int count) { }
     private void DepartShip()
     {
+        countText.gameObject.SetActive(false);
         StartJet();
+        StartCoroutine(SpawnPopParticleRoutine());
         controller.ProcessShipQueue();
     }
 
@@ -73,7 +80,6 @@ public class Ship : MonoBehaviour
     {
         if (!waterJet.isPlaying)
             waterJet.Play();
-
         StopAllCoroutines();
         StartCoroutine(TransitionJet(targetEmissionRate, 0.25f));
     }
@@ -104,5 +110,16 @@ public class Ship : MonoBehaviour
         }
         currentEmissionRate = targetRate;
         emissionModule.rateOverTime = currentEmissionRate;
+    }
+    private IEnumerator SpawnPopParticleRoutine()
+    {
+        if (popParticle != null)
+        {
+            foreach (MeshRenderer m in shipMeshRenderers)
+            {
+                GameObject particle = Instantiate(popParticle, m.transform.position, Quaternion.identity);
+                yield return new WaitForSeconds(0.1f);
+            }
+        }
     }
 }

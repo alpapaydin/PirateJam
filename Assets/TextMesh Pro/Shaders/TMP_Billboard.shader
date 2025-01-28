@@ -1,17 +1,4 @@
-﻿// Simplified SDF shader:
-// - No Shading Option (bevel / bump / env map)
-// - No Glow Option
-// - Softness is applied on both side of the outline
-
-
-//Niter: This is a URP version of the TMPro-Billboard.shader meant to be used on the built in render
-//Built in version avaliable at https://gist.github.com/Spongert/b52a24aa110933a918cf47c777fea1c8
-
-//READ ME! You HAVE to put his under TextMeshPro/Shaders
-//If this code doesn't work in your version of Unity, make a copy of the Mobile Distance Field Shader and Edit like the comments say
-//This doesn't work with an orthographic camera, you can fake the effect using FOV like in https://youtu.be/rnqF6S7PfFA
-
-Shader "TextMeshPro/Mobile/TextMesh Billboard by Niter88" {
+﻿Shader "TextMeshPro/Mobile/TextMesh Billboard" {
 
 Properties {
 	[HDR]_FaceColor     ("Face Color", Color) = (1,1,1,1)
@@ -68,7 +55,6 @@ SubShader {
 		"IgnoreProjector"="True"
 		//"RenderType"="Transparent"
 		"RenderType"="Opaque"
-		//Niter: You have to disable batching! Otherwise things will be offset
 		"DisableBatching" = "True"
 	}
 

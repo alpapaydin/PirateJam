@@ -80,6 +80,10 @@ public class GridController : MonoBehaviour
             if (passenger != null) Destroy(passenger.gameObject);
         passengers.Clear();
 
+        foreach (var tunnel in tunnels.Values)
+            if (tunnel != null) Destroy(tunnel.gameObject);
+        tunnels.Clear();
+
         gridSize = levelData.gridSize.ToVector2Int();
         invalidCells = new HashSet<Vector2Int>(levelData.invalidCells.Select(pos => new Vector2Int(pos.x, pos.y)));
 
@@ -112,6 +116,7 @@ public class GridController : MonoBehaviour
         {
             TriggerTunnelSpawns();
         }
+        OnGridUpdated?.Invoke();
     }
 
     public virtual LevelData GetLevelData()

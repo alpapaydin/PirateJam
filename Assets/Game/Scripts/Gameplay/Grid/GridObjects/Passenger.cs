@@ -10,6 +10,7 @@ public class Passenger : GridObject
     [SerializeField] private float canMoveCueThickness = 0.0007f;
     [SerializeField] private float cannotMoveCueThickness = 0.0004f;
     [SerializeField] private Animator animator;
+    [SerializeField] private GameObject popParticle;
     private GridController controller;
     private PassengerColor passengerColor;
     private Vector2Int gridPosition;
@@ -49,7 +50,7 @@ public class Passenger : GridObject
         passengerColor = data.color;
         isHidden = data.isHidden;
         gridPosition = new Vector2Int(data.x, data.y);
-        UpdateVisuals();
+        SetInitialColor();
         if (controller is EditorGridController)
         {
             BoxCollider collider = gameObject.GetComponent<BoxCollider>();
@@ -67,37 +68,48 @@ public class Passenger : GridObject
         };
     }
 
+    public void SetInitialColor()
+    {
+        Material[] materials = skinnedMeshRenderer.materials;
+        Color originalColor = GetColorFromType(passengerColor);
+        Color hiddenColor = (controller is EditorGridController) ?
+            UnityEngine.Color.Lerp(originalColor, UnityEngine.Color.black, 0.6f) :
+            UnityEngine.Color.black;
+        materials[0].color = isHidden ? hiddenColor : GetColorFromType(passengerColor);
+    }
+
     public void UpdateVisuals()
     {
         if (skinnedMeshRenderer == null)
-        {
             skinnedMeshRenderer = GetComponentInChildren<SkinnedMeshRenderer>();
-        }
-        if (controller != null)
+        if (controller == null) return;
+
+        bool movementEnabled = controller.IsConnectedToFirstRow(gridPosition);
+        if (canMove == movementEnabled) return;
+        if (controller is EditorGridController) return;
+
+        Material[] materials = skinnedMeshRenderer.materials;
+        canMove = movementEnabled;
+        if (canMove)
         {
-            Material[] materials = skinnedMeshRenderer.materials;
-            Color originalColor = GetColorFromType(passengerColor);
-            Color hiddenColor = (controller is EditorGridController) ? UnityEngine.Color.Lerp(originalColor,UnityEngine.Color.black, 0.7f) : UnityEngine.Color.black;
-            materials[0].color = isHidden ? hiddenColor : GetColorFromType(passengerColor);
-            bool movementEnabled = controller.IsConnectedToFirstRow(gridPosition);
-
-            if (canMove == movementEnabled) return;
-            if (controller is EditorGridController) return;
-            canMove = movementEnabled;
-            if (canMove)
+            materials[0].SetFloat("_OutlineWidth", canMoveCueThickness);
+            if (isHidden)
             {
-                materials[0].SetFloat("_OutlineWidth", canMoveCueThickness);
-                if (isHidden)
-                {
-                    isHidden = false;
-                    UpdateVisuals();
-                }
+                isHidden = false;
+                materials[0].color = GetColorFromType(passengerColor);
+                SpawnPopParticle(transform.position);
             }
-            else
-            {
-                materials[0].SetFloat("_OutlineWidth", cannotMoveCueThickness);
-
-            }
+        }
+        else
+        {
+            materials[0].SetFloat("_OutlineWidth", cannotMoveCueThickness);
+        }
+    }
+    private void SpawnPopParticle(Vector3 position)
+    {
+        if (popParticle != null)
+        {
+            Instantiate(popParticle, position, Quaternion.identity);
         }
     }
 
