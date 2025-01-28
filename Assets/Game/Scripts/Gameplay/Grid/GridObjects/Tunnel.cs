@@ -48,7 +48,7 @@ public class Tunnel : GridObject
 
     public enum Orientation
     {
-        Up, Down, Left, Right
+        Up, Right, Down, Left
     }
 
     public TunnelData GetTunnelData()

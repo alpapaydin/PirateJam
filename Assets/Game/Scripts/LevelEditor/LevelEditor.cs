@@ -32,6 +32,7 @@ public class LevelEditor : MonoBehaviour
     private VisualElement tunnelOptions;
     private VisualElement passengerOptions;
     private EnumField passengerColorSelector;
+    private Toggle passengerHiddenToggle;
     private EnumField tunnelOrientationSelector;
     private DropdownField tunnelPassengerSelector;
     private EnumField tunnelPassengerColorSelector;
@@ -49,7 +50,6 @@ public class LevelEditor : MonoBehaviour
     private Button applySizeButton;
     private Button backSizeButton;
 
-    // Ship editing controls
     private DropdownField shipSelector;
     private Button removeShipButton;
     private EnumField shipColorSelector;
@@ -58,13 +58,7 @@ public class LevelEditor : MonoBehaviour
     private Button applyShipsButton;
     private Button backShipsButton;
 
-    // Tile options panel
     private VisualElement tileOptionsPanel;
-    private Button emptyTileButton;
-    private Button invalidTileButton;
-
-    private VisualElement rightPanel;
-
     private Vector2Int selectedTilePosition;
     private string currentLevelName;
     private LevelData currentLevel;
@@ -93,8 +87,6 @@ public class LevelEditor : MonoBehaviour
 
         string jsonPath = Path.Combine(Application.dataPath, "Resources/Levels", $"{levelName}.json");
         string metaPath = jsonPath + ".meta";
-
-        // Delete both the JSON and its meta file
         if (File.Exists(jsonPath))
         {
             File.Delete(jsonPath);
@@ -119,9 +111,9 @@ public class LevelEditor : MonoBehaviour
         string jsonData = JsonUtility.ToJson(newLevel, true);
         string path = Path.Combine(Application.dataPath, "Resources/Levels", $"level_{levelName}.json");
         File.WriteAllText(path, jsonData);
-    #if UNITY_EDITOR
+#if UNITY_EDITOR
         UnityEditor.AssetDatabase.Refresh();
-    #endif
+#endif
         RefreshLevelList();
         levelSelector.value = $"level_{levelName}";
     }
@@ -132,16 +124,16 @@ public class LevelEditor : MonoBehaviour
         if (levelFile != null)
         {
             currentLevelName = levelName;
-            currentLevel = JsonUtility.FromJson<LevelData>(levelFile.text); // Set currentLevel here
+            currentLevel = JsonUtility.FromJson<LevelData>(levelFile.text);
             grid.ConstructGrid(currentLevel);
         }
     }
 
     void SaveCurrentLevel()
     {
-        if (string.IsNullOrEmpty(currentLevelName)) return;  // Only check currentLevelName
+        if (string.IsNullOrEmpty(currentLevelName)) return;
 
-        currentLevel = grid.GetLevelData(); // Get latest data from grid
+        currentLevel = grid.GetLevelData();
 
         string jsonData = JsonUtility.ToJson(currentLevel, true);
         string path = Path.Combine(Application.dataPath, "Resources/Levels", $"{currentLevelName}.json");
@@ -182,19 +174,22 @@ public class LevelEditor : MonoBehaviour
         editButton = root.Q<Button>("EditButton");
         backToMenuButton = root.Q<Button>("BackToMenuButton");
         confirmationBox.style.opacity = 0;
-        addButton.clicked += () => {
+        addButton.clicked += () =>
+        {
             int newLevelNumber = levelSelector.choices.Count + 1;
             CreateLevel(newLevelNumber.ToString());
         };
 
-        removeButton.clicked += () => {
+        removeButton.clicked += () =>
+        {
             if (!string.IsNullOrEmpty(levelSelector.value))
             {
                 ShowDeleteConfirmation(levelSelector.value);
             }
         };
 
-        acceptButton.clicked += () => {
+        acceptButton.clicked += () =>
+        {
             if (!string.IsNullOrEmpty(levelToDelete))
             {
                 DeleteLevel(levelToDelete);
@@ -204,7 +199,8 @@ public class LevelEditor : MonoBehaviour
         backButton.clicked += HideDeleteConfirmation;
         backToMenuButton.clicked += Game.Manager.OpenMainMenu;
 
-        levelSelector.RegisterValueChangedCallback(evt => {
+        levelSelector.RegisterValueChangedCallback(evt =>
+        {
             LoadLevel(evt.newValue);
             editButton.clicked += () => OpenLevelEditing(evt.newValue);
         });
@@ -224,16 +220,16 @@ public class LevelEditor : MonoBehaviour
         tunnelOptions = root.Q<VisualElement>("TunnelOptionsPanel");
         passengerOptions = root.Q<VisualElement>("PassengerOptionsPanel");
         tilePosText = root.Q<Label>("TilePosText");
-        rightPanel = root.Q<VisualElement>("RightPanel");
         configButton = root.Q<Button>("ConfigButton");
         passengerColorSelector = root.Q<EnumField>("PassengerColorSelector");
+        passengerHiddenToggle = root.Q<Toggle>("isHiddenToggle");
         tunnelOrientationSelector = root.Q<EnumField>("OrientationSelector");
         tunnelPassengerSelector = root.Q<DropdownField>("TunnelPassengers");
         tunnelPassengerColorSelector = root.Q<EnumField>("TPassengerColorSelect");
         tunnelAddPassenger = root.Q<Button>("AddNewTPassenger");
         tunnelRemovePassenger = root.Q<Button>("RemovePassengerButton");
         tunnelSetColorPassenger = root.Q<Button>("SetTPassengerColor");
-        
+
         popupsPanel = root.Q<VisualElement>("Popups");
         sizeEditPopup = root.Q<VisualElement>("SizeEditPopup");
         shipEditPopup = root.Q<VisualElement>("ShipEditPopup");
@@ -280,7 +276,8 @@ public class LevelEditor : MonoBehaviour
         tunnelOrientationSelector.Init(Tunnel.Orientation.Down);
         tunnelPassengerColorSelector.Init(PassengerColor.Red);
 
-        tunnelOrientationSelector.RegisterValueChangedCallback(evt => {
+        tunnelOrientationSelector.RegisterValueChangedCallback(evt =>
+        {
             if (grid.GetGridTileAt(selectedTilePosition)?.GridObject is Tunnel)
             {
                 var orientation = (Tunnel.Orientation)evt.newValue;
@@ -288,7 +285,8 @@ public class LevelEditor : MonoBehaviour
             }
         });
 
-        passengerColorSelector.RegisterValueChangedCallback(evt => {
+        passengerColorSelector.RegisterValueChangedCallback(evt =>
+        {
             if (grid.GetGridTileAt(selectedTilePosition)?.GridObject is Passenger)
             {
                 var color = (PassengerColor)evt.newValue;
@@ -296,14 +294,25 @@ public class LevelEditor : MonoBehaviour
             }
         });
 
-        tunnelPassengerSelector.RegisterValueChangedCallback(evt => {
+        passengerHiddenToggle.RegisterValueChangedCallback(evt =>
+        {
+            if (grid.GetGridTileAt(selectedTilePosition)?.GridObject is Passenger)
+            {
+                bool isHidden = evt.newValue;
+                grid.SetPassengerHidden(selectedTilePosition, isHidden);
+            }
+        });
+
+        tunnelPassengerSelector.RegisterValueChangedCallback(evt =>
+        {
             if (evt.newValue != null && int.TryParse(evt.newValue.Split(':')[0], out int index))
             {
                 selectedPassengerIndex = index;
             }
         });
 
-        tunnelAddPassenger.clicked += () => {
+        tunnelAddPassenger.clicked += () =>
+        {
             if (grid.GetGridTileAt(selectedTilePosition)?.GridObject is Tunnel tunnel)
             {
                 var color = (PassengerColor)tunnelPassengerColorSelector.value;
@@ -311,12 +320,13 @@ public class LevelEditor : MonoBehaviour
                 var newPassengers = currentData.passengers.ToList();
                 newPassengers.Add(new TunnelPassenger { color = color });
                 grid.SetTunnelPassengers(selectedTilePosition, newPassengers.ToArray());
-                selectedPassengerIndex = newPassengers.Count - 1;  // Select the newly added passenger
+                selectedPassengerIndex = newPassengers.Count - 1;
                 UpdateTunnelPassengerList(newPassengers.ToArray());
             }
         };
 
-        tunnelRemovePassenger.clicked += () => {
+        tunnelRemovePassenger.clicked += () =>
+        {
             if (grid.GetGridTileAt(selectedTilePosition)?.GridObject is Tunnel tunnel &&
                 int.TryParse(tunnelPassengerSelector.value?.Split(':')[0], out int index))
             {
@@ -333,7 +343,8 @@ public class LevelEditor : MonoBehaviour
             }
         };
 
-        tunnelSetColorPassenger.clicked += () => {
+        tunnelSetColorPassenger.clicked += () =>
+        {
             if (grid.GetGridTileAt(selectedTilePosition)?.GridObject is Tunnel tunnel &&
                 int.TryParse(tunnelPassengerSelector.value?.Split(':')[0], out int index))
             {
@@ -369,7 +380,6 @@ public class LevelEditor : MonoBehaviour
         sizeEditPopup.style.display = DisplayStyle.Flex;
         shipEditPopup.style.display = DisplayStyle.None;
 
-        // Set current values
         widthSlider.value = currentLevel.gridSize.x;
         heightSlider.value = currentLevel.gridSize.y;
     }
@@ -409,7 +419,7 @@ public class LevelEditor : MonoBehaviour
         {
             color = (PassengerColor)shipColorSelector.value,
             arrivalOrder = shipList.Count,
-            capacity = 3 // Default capacity
+            capacity = 3
         });
         currentLevel.busSequence = shipList.ToArray();
         UpdateShipList();
@@ -423,7 +433,6 @@ public class LevelEditor : MonoBehaviour
             if (index >= 0 && index < shipList.Count)
             {
                 shipList.RemoveAt(index);
-                // Update arrival orders
                 for (int i = 0; i < shipList.Count; i++)
                     shipList[i].arrivalOrder = i;
 
@@ -544,6 +553,7 @@ public class LevelEditor : MonoBehaviour
         passengerOptions.style.display = DisplayStyle.Flex;
         PassengerData data = passenger.GetPassengerData();
         passengerColorSelector.value = data.color;
+        passengerHiddenToggle.value = data.isHidden;
     }
 
     void ShowTunnelOptions(Tunnel tunnel)
@@ -565,27 +575,6 @@ public class LevelEditor : MonoBehaviour
     {
         grid.SetTileType(selectedTilePosition, type);
         ShowTileOptions(selectedTilePosition);
-    }
-
-    void ValidateLevel()
-    {
-        // Implement level validation logic
-        bool isValid = true;
-        string errorMessage = "";
-        if (currentLevel.timeLimit <= 0)
-        {
-            isValid = false;
-            errorMessage += "Time limit must be greater than 0\n";
-        }
-
-        if (!isValid)
-        {
-            Debug.LogError($"Level validation failed:\n{errorMessage}");
-        }
-        else
-        {
-            Debug.Log("Level validation passed!");
-        }
     }
 }
 

@@ -11,8 +11,16 @@ public enum PassengerColor
 
 public static class ColorUtility
 {
-    public static Color GetColorFromType(PassengerColor type)
+    public static Color GetColorFromType(PassengerColor type, int shiftColor = 0)
     {
+        if (shiftColor != 0)
+        {
+            int colorCount = System.Enum.GetValues(typeof(PassengerColor)).Length;
+            int newIndex = ((int)type + shiftColor) % colorCount;
+            if (newIndex < 0)
+                newIndex += colorCount;
+            type = (PassengerColor)newIndex;
+        }
         return type switch
         {
             PassengerColor.Red => new Color(1f, 0.2f, 0.2f),

@@ -76,10 +76,13 @@ public class Passenger : GridObject
         if (controller != null)
         {
             Material[] materials = skinnedMeshRenderer.materials;
-            materials[0].color = isHidden ? UnityEngine.Color.black : GetColorFromType(passengerColor);
+            Color originalColor = GetColorFromType(passengerColor);
+            Color hiddenColor = (controller is EditorGridController) ? UnityEngine.Color.Lerp(originalColor,UnityEngine.Color.black, 0.7f) : UnityEngine.Color.black;
+            materials[0].color = isHidden ? hiddenColor : GetColorFromType(passengerColor);
             bool movementEnabled = controller.IsConnectedToFirstRow(gridPosition);
 
-            if (canMove == movementEnabled) { return; }
+            if (canMove == movementEnabled) return;
+            if (controller is EditorGridController) return;
             canMove = movementEnabled;
             if (canMove)
             {
@@ -100,7 +103,7 @@ public class Passenger : GridObject
 
     private Color GetColorFromType(PassengerColor type)
     {
-        return ColorUtility.GetColorFromType(type);
+        return ColorUtility.GetColorFromType(type, controller.ColorShift);
     }
 
     private void HandleTap()

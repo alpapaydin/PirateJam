@@ -1,5 +1,5 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
-    <Style src="project://database/Assets/UI%20Toolkit/Editor/EditorStylesheet.uss?fileID=7433441132597879392&amp;guid=3e79c1ed27449994f90eacb0a85d4f7e&amp;type=3#EditorStylesheet" />
+    <Style src="project://database/Assets/Game/Assets/UI%20Toolkit/EditorStylesheet.uss?fileID=7433441132597879392&amp;guid=3e79c1ed27449994f90eacb0a85d4f7e&amp;type=3#EditorStylesheet" />
     <ui:VisualElement picking-mode="Ignore" style="flex-grow: 1; justify-content: flex-start; align-items: auto;">
         <ui:VisualElement name="TopPanel" picking-mode="Ignore" style="flex-grow: 1; bottom: auto; top: auto; justify-content: center; align-items: flex-start; flex-direction: row; position: relative; flex-shrink: 0; align-self: flex-end; margin-top: 25px; margin-right: 25px; margin-bottom: 25px; margin-left: 25px; opacity: 1; transition-property: opacity; transition-timing-function: ease-in-out; transition-duration: 0.5s;">
             <ui:VisualElement name="TileOptionsPanel" picking-mode="Ignore" style="flex-grow: 1; align-self: auto; justify-content: center; align-items: center; opacity: 1; transition-property: opacity; transition-duration: 0.5s; transition-timing-function: ease-out; display: flex;">
@@ -19,7 +19,7 @@
             <ui:VisualElement name="PassengerOptionsPanel" picking-mode="Ignore" style="flex-grow: 1; align-self: auto; justify-content: center; align-items: stretch; opacity: 1; transition-property: opacity; transition-duration: 0.5s; transition-timing-function: ease-out; display: none;">
                 <ui:Label tabindex="-1" text="Passenger Config" parse-escape-sequences="true" display-tooltip-when-elided="true" class="smalltext" style="-unity-text-align: upper-center;" />
                 <ui:EnumField type="PassengerColor, Assembly-CSharp" name="PassengerColorSelector" class="smalltext" style="justify-content: flex-start; -unity-text-align: upper-center;" />
-                <ui:Button text="Tile Options" parse-escape-sequences="true" display-tooltip-when-elided="true" name="ShowTileOptions" class="smalltext" />
+                <ui:Toggle label="is Hidden?" name="isHiddenToggle" class="smalltext" style="-unity-text-align: upper-right; justify-content: center; align-self: center;" />
             </ui:VisualElement>
             <ui:VisualElement name="TunnelOptionsPanel" picking-mode="Ignore" style="flex-grow: 1; align-self: auto; justify-content: center; align-items: stretch; opacity: 1; transition-property: opacity; transition-duration: 0.5s; transition-timing-function: ease-out; display: none;">
                 <ui:Label tabindex="-1" text="Tunnel Config" parse-escape-sequences="true" display-tooltip-when-elided="true" class="smalltext" style="-unity-text-align: upper-center;" />

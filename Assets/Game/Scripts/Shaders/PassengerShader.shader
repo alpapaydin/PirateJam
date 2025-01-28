@@ -11,7 +11,6 @@ Shader "Custom/PassengerShaderWithOutline"
     }
     SubShader
     {
-        // First pass - the outline
         Pass
         {
             Name "OUTLINE"
@@ -55,7 +54,6 @@ Shader "Custom/PassengerShaderWithOutline"
             ENDCG
         }
 
-        // Second pass - the main surface
         Tags { "RenderType"="Opaque" }
         LOD 200
 

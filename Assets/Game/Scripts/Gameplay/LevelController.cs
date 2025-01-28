@@ -14,6 +14,7 @@ public class LevelController : MonoBehaviour
     [SerializeField] private Transform boardAnchor;
     [SerializeField] private Transform shipAnchor;
     public GameState GameState => gameState;
+    public int ColorShift { get; private set; } = 0;
     public Bench Bench => bench;
     public ShipController ShipController => shipController;
     private int currentLevel = 0;
@@ -26,6 +27,9 @@ public class LevelController : MonoBehaviour
     {
         shipController.OnShipDocked += NewShipDocked;
         shipController.OnShipDeparted += ShipDeparted;
+        ColorShift = Random.Range(0, 20);
+        shipController.ColorShift = ColorShift;
+        grid.ColorShift = ColorShift;
     }
 
     private void Start()
@@ -52,7 +56,7 @@ public class LevelController : MonoBehaviour
 
     private IEnumerator TimerCoroutine()
     {
-        WaitForSeconds wait = new WaitForSeconds(1f); // Cache WaitForSeconds to avoid garbage collection
+        WaitForSeconds wait = new WaitForSeconds(1f);
 
         while (currentTime > 0 && GameState == GameState.Playing)
         {

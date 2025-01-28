@@ -5,22 +5,15 @@
         "y": 4
     },
     "invalidCells": [],
-    "passengers": [],
-    "tunnels": [
+    "passengers": [
         {
             "x": 3,
             "y": 2,
-            "orientation": 0,
-            "passengers": [
-                {
-                    "color": 2
-                },
-                {
-                    "color": 0
-                }
-            ]
+            "color": 0,
+            "isHidden": false
         }
     ],
+    "tunnels": [],
     "busSequence": [],
     "timeLimit": 60.0,
     "benchSlots": 5

@@ -53,7 +53,6 @@ Shader "Custom/SeaSurface"
             v2f vert (appdata v)
             {
                 v2f o;
-                // Add vertical wave motion
                 float wave = sin(v.uv.x * _WaveFrequency + _Time.y * _WaveSpeed);
                 v.vertex.y += wave * _WaveAmplitude;
                 o.vertex = UnityObjectToClipPos(v.vertex);
@@ -63,18 +62,11 @@ Shader "Custom/SeaSurface"
 
             fixed4 frag (v2f i) : SV_Target
             {
-                // Create wave pattern
                 float wave = sin(i.uv.x * _WaveFrequency + _Time.y * _WaveSpeed);
-                wave = floor(wave * _WaveBands) / _WaveBands; // Create distinct bands
-                
-                // Mix water color with highlight color based on wave height
+                wave = floor(wave * _WaveBands) / _WaveBands;
                 float4 finalColor = lerp(_WaterColor, _HighlightColor, wave * 0.5 + 0.5);
-                
-                // Add some vertical gradient
                 float gradient = 1 - i.uv.y;
                 finalColor = lerp(finalColor, _WaterColor * 0.8, gradient * 0.3);
-                
-                // Sample texture and combine with calculated color
                 fixed4 texColor = tex2D(_MainTex, i.uv);
                 return finalColor * texColor;
             }

@@ -24,6 +24,7 @@ public class GridController : MonoBehaviour
     public GameObject PassengerPrefab => passengerPrefab;
     public event System.Action OnGridUpdated;
     public event System.Action<Passenger> OnPassengerReachedBench;
+    public int ColorShift { get; set; } = 0;
 
     private LevelController levelController;
     protected Dictionary<Vector2Int, Tunnel> tunnels = new Dictionary<Vector2Int, Tunnel>();
@@ -103,13 +104,14 @@ public class GridController : MonoBehaviour
             SpawnPassenger(passengerData);
         }
 
-        // Spawn tunnels
         foreach (var tunnelData in levelData.tunnels)
         {
             SpawnTunnel(tunnelData);
         }
         if (this is not EditorGridController)
+        {
             TriggerTunnelSpawns();
+        }
     }
 
     public virtual LevelData GetLevelData()
@@ -234,10 +236,10 @@ public class GridController : MonoBehaviour
 
     private readonly Vector2Int[] directions = new Vector2Int[]
     {
-    new Vector2Int(0, 1),  // up
-    new Vector2Int(0, -1), // down
-    new Vector2Int(1, 0),  // right
-    new Vector2Int(-1, 0)  // left
+    new Vector2Int(0, 1),
+    new Vector2Int(0, -1),
+    new Vector2Int(1, 0),
+    new Vector2Int(-1, 0)
     };
     
     public bool IsConnectedToFirstRow(Vector2Int position)
@@ -265,7 +267,6 @@ public class GridController : MonoBehaviour
 
     public List<Vector2Int> GetPathToFirstRow(Vector2Int start)
     {
-
         Dictionary<Vector2Int, Vector2Int> cameFrom = new Dictionary<Vector2Int, Vector2Int>();
         Queue<Vector2Int> queue = new Queue<Vector2Int>();
         HashSet<Vector2Int> visited = new HashSet<Vector2Int>();
@@ -276,7 +277,6 @@ public class GridController : MonoBehaviour
         while (queue.Count > 0)
         {
             Vector2Int currentV = queue.Dequeue();
-            // If we reached the first row
             if (currentV.y == 0)
             {
                 foundPath = true;
@@ -286,7 +286,6 @@ public class GridController : MonoBehaviour
             foreach (Vector2Int dir in directions)
             {
                 Vector2Int next = currentV + dir;
-                // Skip if we've already visited this cell or it's not walkable
                 if (visited.Contains(next) || !IsWalkable(next))
                     continue;
 
@@ -295,10 +294,8 @@ public class GridController : MonoBehaviour
                 cameFrom[next] = currentV;
             }
         }
-
         if (!foundPath)
             return null;
-        // Reconstruct path
         List<Vector2Int> path = new List<Vector2Int>();
         Vector2Int current = endPos;
         while (!current.Equals(start))

@@ -25,6 +25,7 @@ public class ShipController : MonoBehaviour
     }
     public event Action<Ship> OnShipDocked;
     public event Action<Ship> OnShipDeparted;
+    public int ColorShift { get; set; } = 0;
 
     private Queue<ShipData> shipQueue;
     private List<Ship> shipList;
@@ -85,7 +86,6 @@ public class ShipController : MonoBehaviour
         Vector3 lastPoint = start;
         foreach (var waypoint in waypoints)
         {
-            // Find nearest path point to create a smooth curve
             List<Vector3> smoothPoints = GetSmoothPathBetweenPoints(lastPoint, waypoint.point.position);
             path.AddRange(smoothPoints);
             lastPoint = waypoint.point.position;
@@ -97,7 +97,6 @@ public class ShipController : MonoBehaviour
     private List<Vector3> GetSmoothPathBetweenPoints(Vector3 start, Vector3 end)
     {
         List<Vector3> smoothPoints = new List<Vector3>();
-        // Find path points that lie between start and end
         var relevantPoints = pathPoints.FindAll(p =>
         {
             Vector3 toEnd = end - start;
@@ -105,10 +104,8 @@ public class ShipController : MonoBehaviour
             float dot = Vector3.Dot(toEnd.normalized, toPoint.normalized);
             return dot > 0.5f && Vector3.Distance(p.position, start) < Vector3.Distance(end, start);
         });
-        // Sort points by distance from start
         relevantPoints.Sort((a, b) =>
             Vector3.Distance(a.position, start).CompareTo(Vector3.Distance(b.position, start)));
-        // Add intermediate points
         foreach (var point in relevantPoints)
         {
             smoothPoints.Add(point.position);
@@ -144,7 +141,6 @@ public class ShipController : MonoBehaviour
                 float fractionOfJourney = distanceCovered / journeyLength;
                 if (fractionOfJourney >= 1f) break;
                 ship.transform.position = Vector3.Lerp(startPos, endPos, fractionOfJourney);
-                // Rotation towards movement direction
                 Vector3 direction = (endPos - ship.transform.position).normalized;
                 if (direction != Vector3.zero)
                 {
@@ -188,6 +184,7 @@ public class ShipController : MonoBehaviour
         {
             dockedShip = ship;
             OnShipDocked?.Invoke(ship);
+            ship.StopJet();
         }
     }
 
