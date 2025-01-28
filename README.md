@@ -21,6 +21,7 @@ A puzzle game where players organize passengers into matching colored ships.
 ## Features
 - Progressive level system
 - Level editor for creating custom puzzles
+- Level validation
 - Sound system with pooled audio sources
 - Save system using PlayerPrefs
 - Configurable:
