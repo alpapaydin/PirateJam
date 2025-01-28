@@ -1,7 +1,8 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class Popup : MonoBehaviour {
+public class Popup : MonoBehaviour
+{
     [SerializeField] private AudioClip thudClip;
     [SerializeField] private AudioClip loseClip;
     [SerializeField] private AudioClip tapClip;
@@ -15,8 +16,10 @@ public class Popup : MonoBehaviour {
 
     public void PlayThud() { audioSource.PlayOneShot(thudClip); }
     public void PlayLose() { audioSource.PlayOneShot(loseClip); }
-    public void GoToMainMenu() { SceneManager.LoadScene("MainScene"); }
-    public void RestartLevel() { 
+    public void GoToMainMenu() { Game.Manager.OpenMainMenu(); }
+    public void RestartLevel()
+    {
         audioSource.PlayOneShot(tapClip);
-        SceneManager.LoadScene("LevelScene"); }
+        Game.Manager.StartGame();
+    }
 }

@@ -1,0 +1,44 @@
+.text {
+    font-size: 24px;
+    -unity-text-outline-width: 1px;
+    text-shadow: 3px 3px 0 rgb(0, 0, 0);
+    -unity-font: url('project://database/Assets/Game/Assets/Fonts/LilitaOne-Regular.ttf?fileID=12800000&guid=cb97e51d8f8715e449734b89e58b4e23&type=3#LilitaOne-Regular');
+    -unity-font-definition: url('project://database/Assets/Game/Assets/Fonts/LilitaOne-Regular%20SDF%201.asset?fileID=11400000&guid=6b5db9124156f234fac09126333818bc&type=2#LilitaOne-Regular SDF 1');
+    color: rgb(255, 255, 255);
+}
+
+.button {
+    -unity-background-image-tint-color: rgb(255, 255, 255);
+    background-color: rgba(0, 0, 0, 0.48);
+    margin-top: 5px;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    margin-left: 5px;
+    align-items: auto;
+    overflow: visible;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+    border-top-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+    border-left-color: rgba(255, 255, 255, 0.49);
+    border-right-color: rgba(255, 255, 255, 0.49);
+    border-top-color: rgba(255, 255, 255, 0.49);
+    border-bottom-color: rgba(255, 255, 255, 0.49);
+    padding-top: 15px;
+    padding-right: 15px;
+    padding-bottom: 15px;
+    padding-left: 15px;
+}
+
+.smalltext {
+    font-size: 14px;
+    -unity-text-outline-width: 1px;
+    text-shadow: 3px 3px 0 rgb(0, 0, 0);
+    -unity-font: url('project://database/Assets/Game/Assets/Fonts/LilitaOne-Regular.ttf?fileID=12800000&guid=cb97e51d8f8715e449734b89e58b4e23&type=3#LilitaOne-Regular');
+    -unity-font-definition: url('project://database/Assets/Game/Assets/Fonts/LilitaOne-Regular%20SDF%201.asset?fileID=11400000&guid=6b5db9124156f234fac09126333818bc&type=2#LilitaOne-Regular SDF 1');
+    color: rgb(255, 255, 255);
+}

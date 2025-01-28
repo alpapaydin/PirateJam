@@ -1,0 +1,21 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/Game/Assets/UI%20Toolkit/EditorStylesheet.uss?fileID=7433441132597879392&amp;guid=3e79c1ed27449994f90eacb0a85d4f7e&amp;type=3#EditorStylesheet" />
+    <ui:VisualElement style="flex-grow: 1; align-items: stretch; justify-content: flex-start; align-self: auto;">
+        <ui:VisualElement name="TopContainer" style="flex-grow: 0; flex-shrink: 1; justify-content: center; align-items: auto; flex-direction: column; align-self: auto; background-color: rgba(0, 0, 0, 0.39); font-size: 18px; color: rgb(255, 255, 255); -unity-text-outline-width: 0.5px;">
+            <ui:DropdownField index="-1" choices="System.Collections.Generic.List`1[System.String]" name="LevelSelector" style="justify-content: center; align-self: auto; height: auto; align-items: auto; flex-grow: 1; overflow: visible; flex-shrink: 1;" />
+            <ui:VisualElement name="HBox" style="flex-grow: 1; flex-direction: row; justify-content: center; align-self: center; height: 15%; max-height: 15%;">
+                <ui:Button text="Add" parse-escape-sequences="true" display-tooltip-when-elided="true" name="AddButton" class="text button" />
+                <ui:Button text="Remove" parse-escape-sequences="true" display-tooltip-when-elided="true" name="RemoveButton" class="text button" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="ConfirmationBox" style="flex-grow: 0.3; background-color: rgba(0, 0, 0, 0.29); align-items: center; align-self: auto; justify-content: center; flex-shrink: 1; flex-direction: column; top: 15%; bottom: auto; opacity: 0; transition-property: opacity; transition-duration: 1s; transition-timing-function: ease-in-out;">
+            <ui:Label tabindex="-1" text="Do you want to delete level 1?" parse-escape-sequences="true" display-tooltip-when-elided="true" name="ConfirmationLabel" class="text" style="white-space: normal; font-size: 24px; -unity-text-align: middle-center; -unity-font-definition: url(&apos;project://database/Assets/Game/Assets/Fonts/LilitaOne-Regular%20SDF%201.asset?fileID=11400000&amp;guid=6b5db9124156f234fac09126333818bc&amp;type=2#LilitaOne-Regular SDF 1&apos;); color: rgb(255, 255, 255); -unity-text-outline-width: 1px;" />
+            <ui:VisualElement style="flex-grow: 1; flex-direction: row;">
+                <ui:Button text="Yes" parse-escape-sequences="true" display-tooltip-when-elided="true" name="AcceptButton" class="text" />
+                <ui:Button text="No" parse-escape-sequences="true" display-tooltip-when-elided="true" name="BackButton" class="text" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:Button text="Edit" parse-escape-sequences="true" display-tooltip-when-elided="true" name="EditButton" class="text" style="flex-grow: 0; bottom: auto; top: 40%; width: 50%; align-self: center; align-items: center;" />
+        <ui:Button text="Back" parse-escape-sequences="true" display-tooltip-when-elided="true" name="BackToMenuButton" class="text" style="flex-grow: 0; bottom: auto; top: 40%; width: 50%; align-items: center; align-self: center;" />
+    </ui:VisualElement>
+</ui:UXML>

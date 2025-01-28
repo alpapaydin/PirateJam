@@ -16,7 +16,7 @@ public class LevelController : MonoBehaviour
     public GameState GameState => gameState;
     public Bench Bench => bench;
     public ShipController ShipController => shipController;
-
+    private int currentLevel = 0;
     private GameState gameState = GameState.Paused;
     private LevelData levelData;
     private float currentTime;
@@ -30,7 +30,8 @@ public class LevelController : MonoBehaviour
 
     private void Start()
     {
-        LoadLevel(1);
+        currentLevel = Game.Manager.CurrentLevel;
+        LoadLevel(currentLevel);
     }
 
     public void LoadLevel(int levelNumber)
@@ -82,15 +83,16 @@ public class LevelController : MonoBehaviour
     }
 
     private void NewShipDocked(Ship ship)
-    {
-        if (ship.Data.arrivalOrder == 0)
-        { 
-            gameState = GameState.Playing;
-            StartTimer();
-        }
-        
+    {   
         TryBoardBenchPassengers();
         EvaluateLoseCondition();
+    }
+
+    public void StartPlaying()
+    {
+        gameState = GameState.Playing;
+        StartTimer();
+        uiController.RemoveTapToStart();
     }
 
     private void ShipDeparted(Ship ship)
@@ -162,8 +164,8 @@ public class LevelController : MonoBehaviour
             yield return null;
         Transform tempAnchor = CreateOffsetAnchor(boardAnchor, boardingXOffsetRange);
         yield return passenger.MoveTo(tempAnchor);
+        Game.Sound.PlaySound("bloop2");
         Destroy(tempAnchor.gameObject);
-        SoundController.Instance.PlaySound("pop");
         yield return passenger.JumpTo(shipAnchor);
         ship.PassengerBoarded();
         bench.ClearSlotForPassenger(passenger);
@@ -181,6 +183,7 @@ public class LevelController : MonoBehaviour
     private void LevelWon() 
     {
         gameState = GameState.Won;
+        Game.Manager.CompleteLevel(currentLevel);
         uiController.LevelWon();
     }
     private void LevelFailed() 

@@ -38,7 +38,7 @@ public enum GameState
 public class LevelData
 {
     public int levelNumber;
-    public SerializableVector2Int gridSize;
+    public SerializableVector2Int gridSize = new SerializableVector2Int(4,4);
     public Vector2Int[] invalidCells;
     public PassengerData[] passengers;
     public TunnelData[] tunnels;

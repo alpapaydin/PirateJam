@@ -2,14 +2,15 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine.UIElements;
+using Unity.VisualScripting;
 
 public class GridController : MonoBehaviour
 {
-    public static GridController Instance { get; private set; }
-
     [Header("References")]
     [SerializeField] private Tilemap gridMap;
-    [SerializeField] private GameObject validCellPrefab;
+    [SerializeField] protected GameObject validCellPrefab;
+    [SerializeField] protected GameObject invalidCellPrefab;
     [SerializeField] private GameObject passengerPrefab;
     [SerializeField] private GameObject tunnelPrefab;
 
@@ -17,7 +18,7 @@ public class GridController : MonoBehaviour
     [SerializeField] private float cellHeight = 0.1f;
 
     [Header("Parent Objects")]
-    [SerializeField] private Transform cellContainer;
+    [SerializeField] protected Transform cellContainer;
     [SerializeField] private Transform passengerContainer;
     public LevelController LevelController => levelController;
     public GameObject PassengerPrefab => passengerPrefab;
@@ -25,18 +26,14 @@ public class GridController : MonoBehaviour
     public event System.Action<Passenger> OnPassengerReachedBench;
 
     private LevelController levelController;
-    private bool isGridPositioned = false;
-    private Dictionary<Vector2Int, Tunnel> tunnels = new Dictionary<Vector2Int, Tunnel>();
-    private Dictionary<Vector2Int, GameObject> cellObjects = new Dictionary<Vector2Int, GameObject>();
-    private Dictionary<Vector2Int, Passenger> passengers = new Dictionary<Vector2Int, Passenger>();
-    private HashSet<Vector2Int> invalidCells = new HashSet<Vector2Int>();
-    private Vector2Int gridSize;
+    protected Dictionary<Vector2Int, Tunnel> tunnels = new Dictionary<Vector2Int, Tunnel>();
+    protected Dictionary<Vector2Int, GameObject> cellObjects = new Dictionary<Vector2Int, GameObject>();
+    protected Dictionary<Vector2Int, Passenger> passengers = new Dictionary<Vector2Int, Passenger>();
+    protected HashSet<Vector2Int> invalidCells = new HashSet<Vector2Int>();
+    protected Vector2Int gridSize;
 
     private void Awake()
     {
-        if (Instance == null) Instance = this;
-        else { Destroy(gameObject); return; }
-
         ValidateReferences();
     }
 
@@ -69,7 +66,11 @@ public class GridController : MonoBehaviour
             Debug.LogError("LevelController reference not provided!");
             return;
         }
+        ConstructGrid(levelData);
+    }
 
+    public virtual void ConstructGrid(LevelData levelData)
+    {
         foreach (var cell in cellObjects.Values)
             if (cell != null) Destroy(cell);
         cellObjects.Clear();
@@ -86,18 +87,14 @@ public class GridController : MonoBehaviour
             for (int y = 0; y < gridSize.y; y++)
             {
                 Vector2Int pos = new Vector2Int(x, y);
-                if (!invalidCells.Contains(pos))
-                {
-                    CreateCell(pos);
-                }
+                bool isValid = !invalidCells.Contains(pos);
+                CreateCell(pos, isValid);
             }
         }
         var positioningManager = GetComponent<GridPositioningManager>();
         if (positioningManager != null)
         {
-            isGridPositioned = false;
             positioningManager.InitializeGridPosition(gridSize);
-            positioningManager.OnGridPositioned += HandleGridPositioned;
         }
 
         // Spawn passengers
@@ -111,34 +108,33 @@ public class GridController : MonoBehaviour
         {
             SpawnTunnel(tunnelData);
         }
-
-        // Only trigger tunnel spawns if grid is already positioned
-        if (isGridPositioned)
-        {
+        if (this is not EditorGridController)
             TriggerTunnelSpawns();
-        }
-
     }
-    private void HandleGridPositioned()
+
+    public virtual LevelData GetLevelData()
     {
-        isGridPositioned = true;
-        TriggerTunnelSpawns();
+        LevelData data = new LevelData();
+        data.gridSize = new SerializableVector2Int(gridSize.x, gridSize.y);
+        data.invalidCells = invalidCells.ToArray();
+        data.passengers = passengers.Values.Select(p => p.GetPassengerData()).ToArray();
+        data.tunnels = tunnels.Values.Select(t => t.GetTunnelData()).ToArray();
+        return data;
     }
 
     private void OnDestroy()
     {
         var positioningManager = GetComponent<GridPositioningManager>();
-        if (positioningManager != null)
-        {
-            positioningManager.OnGridPositioned -= HandleGridPositioned;
-        }
     }
 
-    private void CreateCell(Vector2Int gridPos)
+    protected void CreateCell(Vector2Int gridPos, bool isValid = true)
     {
         Vector3 worldPos = GetWorldPosition(gridPos);
-        GameObject cellObject = Instantiate(validCellPrefab, worldPos, Quaternion.identity, cellContainer);
+        GameObject spawnPrefab = isValid ? validCellPrefab : invalidCellPrefab;
+        GameObject cellObject = Instantiate(spawnPrefab, worldPos, Quaternion.identity, cellContainer);
         cellObject.name = $"Cell_{gridPos.x}_{gridPos.y}";
+        CellBase cell = cellObject.GetComponent<CellBase>();
+        cell.InitializeCell(gridPos, this);
         cellObjects[gridPos] = cellObject;
     }
 
@@ -162,6 +158,8 @@ public class GridController : MonoBehaviour
         {
             passenger.Initialize(data, this);
             passengers[gridPos] = passenger;
+            GridTile gridTile = GetGridTileAt(gridPos);
+            gridTile.GridObject = passenger;
         }
     }
     public void RegisterPassenger(Vector2Int position, Passenger passenger)
@@ -178,7 +176,7 @@ public class GridController : MonoBehaviour
         return Instantiate(passengerPrefab, position, Quaternion.identity, passengerContainer);
     }
 
-    private void SpawnTunnel(TunnelData data)
+    protected void SpawnTunnel(TunnelData data)
     {
         Vector2Int gridPos = new Vector2Int(data.x, data.y);
 
@@ -196,6 +194,8 @@ public class GridController : MonoBehaviour
         {
             tunnel.Initialize(data, this);
             tunnels[gridPos] = tunnel;
+            GridTile gridTile = GetGridTileAt(gridPos);
+            gridTile.GridObject = tunnel;
         }
     }
 
@@ -249,14 +249,11 @@ public class GridController : MonoBehaviour
         while (queue.Count > 0)
         {
             Vector2Int current = queue.Dequeue();
-            // If we reached the first row (y = 0), return true
             if (current.y == 0)
                 return true;
-            // Check all adjacent cells
             foreach (Vector2Int dir in directions)
             {
                 Vector2Int next = current + dir;
-                // Skip if we've already visited this cell or it's not walkable
                 if (visited.Contains(next) || !IsWalkable(next))
                     continue;
                 queue.Enqueue(next);
@@ -330,5 +327,23 @@ public class GridController : MonoBehaviour
     public void MovePassengerToBench(Passenger passenger)
     {
         OnPassengerReachedBench?.Invoke(passenger);
+    }
+
+    public CellBase GetCellAt(Vector2Int position)
+    {
+        if (cellObjects.TryGetValue(position, out GameObject cellObject) && cellObject != null)
+        {
+            return cellObject.GetComponent<CellBase>();
+        }
+        return null;
+    }
+
+    public GridTile GetGridTileAt(Vector2Int position)
+    {
+        if (cellObjects.TryGetValue(position, out GameObject cellObject) && cellObject != null)
+        {
+            return cellObject.GetComponent<GridTile>();
+        }
+        return null;
     }
 }

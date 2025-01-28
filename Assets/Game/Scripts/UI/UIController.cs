@@ -6,6 +6,7 @@ public class UIController : MonoBehaviour
     [SerializeField] private Canvas gameCanvas;
     [SerializeField] private GameObject winPopupPrefab;
     [SerializeField] private GameObject losePopupPrefab;
+    [SerializeField] private GameObject tapToStart;
     private GameObject activePopup;
     private UIDocument document;
     private Label levelText;
@@ -66,5 +67,11 @@ public class UIController : MonoBehaviour
     public void HideHUD()
     {
         document.rootVisualElement.style.opacity = 0;
+    }
+
+    public void RemoveTapToStart()
+    {
+        Game.Sound.PlaySound("bloop1");
+        Destroy(tapToStart);
     }
 }

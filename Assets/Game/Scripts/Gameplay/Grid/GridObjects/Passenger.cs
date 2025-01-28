@@ -50,6 +50,21 @@ public class Passenger : GridObject
         isHidden = data.isHidden;
         gridPosition = new Vector2Int(data.x, data.y);
         UpdateVisuals();
+        if (controller is EditorGridController)
+        {
+            BoxCollider collider = gameObject.GetComponent<BoxCollider>();
+            collider.enabled = false;
+        }
+    }
+    public PassengerData GetPassengerData()
+    {
+        return new PassengerData
+        {
+            x = gridPosition.x,
+            y = gridPosition.y,
+            color = passengerColor,
+            isHidden = isHidden
+        };
     }
 
     public void UpdateVisuals()

@@ -1,0 +1,9 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI%20Toolkit/Default.uss?fileID=7433441132597879392&amp;guid=fa540e1852750ee4db66e314ad63f704&amp;type=3#Default" />
+    <ui:VisualElement picking-mode="Ignore" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); height: 276px;">
+        <ui:VisualElement name="Container" picking-mode="Ignore" style="flex-grow: 0.15; align-items: auto; flex-direction: row; justify-content: flex-start; -unity-text-align: middle-center; opacity: 1; margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; background-color: rgba(0, 0, 0, 0.39); white-space: normal; text-overflow: clip; flex-wrap: nowrap;">
+            <ui:Label tabindex="-1" text="Level 1" parse-escape-sequences="true" display-tooltip-when-elided="true" name="LevelText" picking-mode="Ignore" class="text" style="-unity-font: url(&apos;project://database/Assets/Game/Assets/Fonts/LilitaOne-Regular.ttf?fileID=12800000&amp;guid=cb97e51d8f8715e449734b89e58b4e23&amp;type=3#LilitaOne-Regular&apos;);" />
+            <ui:Label tabindex="-1" text="60" parse-escape-sequences="true" display-tooltip-when-elided="true" name="TimerText" picking-mode="Ignore" class="text" style="-unity-font: url(&apos;project://database/Assets/Game/Assets/Fonts/LilitaOne-Regular.ttf?fileID=12800000&amp;guid=cb97e51d8f8715e449734b89e58b4e23&amp;type=3#LilitaOne-Regular&apos;); transition-property: scale, color; transition-duration: 0.5s, 0.5s; scale: 0.3 0.3;" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

@@ -46,6 +46,31 @@ public class Tunnel : GridObject
         }
     }
 
+    public enum Orientation
+    {
+        Up, Down, Left, Right
+    }
+
+    public TunnelData GetTunnelData()
+    {
+        return new TunnelData
+        {
+            x = gridPosition.x,
+            y = gridPosition.y,
+            orientation = GetOrientationFromDirection(exitDirection),
+            passengers = passengerQueue.ToArray()
+        };
+    }
+
+    private int GetOrientationFromDirection(Vector2Int direction)
+    {
+        if (direction == new Vector2Int(0, -1)) return 0;
+        if (direction == new Vector2Int(1, 0)) return 1;
+        if (direction == new Vector2Int(0, 1)) return 2;
+        if (direction == new Vector2Int(-1, 0)) return 3;
+        return 0;
+    }
+
     public bool TrySpawnNextPassenger()
     {
         if (isSpawning || passengerQueue.Count == 0)

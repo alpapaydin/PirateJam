@@ -1,0 +1,81 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI%20Toolkit/Editor/EditorStylesheet.uss?fileID=7433441132597879392&amp;guid=3e79c1ed27449994f90eacb0a85d4f7e&amp;type=3#EditorStylesheet" />
+    <ui:VisualElement picking-mode="Ignore" style="flex-grow: 1; justify-content: flex-start; align-items: auto;">
+        <ui:VisualElement name="TopPanel" picking-mode="Ignore" style="flex-grow: 1; bottom: auto; top: auto; justify-content: center; align-items: flex-start; flex-direction: row; position: relative; flex-shrink: 0; align-self: flex-end; margin-top: 25px; margin-right: 25px; margin-bottom: 25px; margin-left: 25px; opacity: 1; transition-property: opacity; transition-timing-function: ease-in-out; transition-duration: 0.5s;">
+            <ui:VisualElement name="TileOptionsPanel" picking-mode="Ignore" style="flex-grow: 1; align-self: auto; justify-content: center; align-items: center; opacity: 1; transition-property: opacity; transition-duration: 0.5s; transition-timing-function: ease-out; display: flex;">
+                <ui:VisualElement name="MainControls" picking-mode="Ignore" style="flex-grow: 0.1; flex-direction: row; align-items: center; align-self: auto; justify-content: center;">
+                    <ui:VisualElement picking-mode="Ignore" style="flex-grow: 1;">
+                        <ui:Button text="Cell" parse-escape-sequences="true" display-tooltip-when-elided="true" name="EmptyCell" class="text smalltext" />
+                        <ui:Button text="Empty" parse-escape-sequences="true" display-tooltip-when-elided="true" name="InvalidCell" class="text smalltext" />
+                    </ui:VisualElement>
+                    <ui:VisualElement picking-mode="Ignore" style="flex-grow: 1;">
+                        <ui:Button text="Tunnel" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Tunnel" class="text smalltext" />
+                        <ui:Button text="Passenger" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Passenger" class="text smalltext" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+                <ui:Button text="Configure" parse-escape-sequences="true" display-tooltip-when-elided="true" name="ConfigButton" class="smalltext" style="align-items: center; visibility: visible; display: none;" />
+                <ui:Label tabindex="-1" text="CellPos" parse-escape-sequences="true" display-tooltip-when-elided="true" name="TilePosText" picking-mode="Ignore" class="text" style="align-items: center; align-self: center;" />
+            </ui:VisualElement>
+            <ui:VisualElement name="PassengerOptionsPanel" picking-mode="Ignore" style="flex-grow: 1; align-self: auto; justify-content: center; align-items: stretch; opacity: 1; transition-property: opacity; transition-duration: 0.5s; transition-timing-function: ease-out; display: none;">
+                <ui:Label tabindex="-1" text="Passenger Config" parse-escape-sequences="true" display-tooltip-when-elided="true" class="smalltext" style="-unity-text-align: upper-center;" />
+                <ui:EnumField type="PassengerColor, Assembly-CSharp" name="PassengerColorSelector" class="smalltext" style="justify-content: flex-start; -unity-text-align: upper-center;" />
+                <ui:Button text="Tile Options" parse-escape-sequences="true" display-tooltip-when-elided="true" name="ShowTileOptions" class="smalltext" />
+            </ui:VisualElement>
+            <ui:VisualElement name="TunnelOptionsPanel" picking-mode="Ignore" style="flex-grow: 1; align-self: auto; justify-content: center; align-items: stretch; opacity: 1; transition-property: opacity; transition-duration: 0.5s; transition-timing-function: ease-out; display: none;">
+                <ui:Label tabindex="-1" text="Tunnel Config" parse-escape-sequences="true" display-tooltip-when-elided="true" class="smalltext" style="-unity-text-align: upper-center;" />
+                <ui:EnumField type="Tunnel+Orientation, Assembly-CSharp" name="OrientationSelector" class="smalltext" style="justify-content: flex-start; -unity-text-align: upper-center;" />
+                <ui:Foldout text="Passengers" value="false" style="justify-content: center; align-items: stretch; flex-shrink: 0;">
+                    <ui:DropdownField index="-1" choices="a,b,c" name="TunnelPassengers" style="justify-content: flex-start; align-self: stretch; flex-grow: 0;" />
+                    <ui:Button text="Remove" parse-escape-sequences="true" display-tooltip-when-elided="true" name="RemovePassengerButton" />
+                    <ui:EnumField type="PassengerColor, Assembly-CSharp" name="TPassengerColorSelect" />
+                    <ui:VisualElement style="flex-grow: 1; flex-direction: row; justify-content: space-around; align-items: auto;">
+                        <ui:Button text="Set Color" parse-escape-sequences="true" display-tooltip-when-elided="true" name="SetTPassengerColor" style="flex-grow: 0.3;" />
+                        <ui:Button text="Add New" parse-escape-sequences="true" display-tooltip-when-elided="true" name="AddNewTPassenger" style="flex-grow: 0.3;" />
+                    </ui:VisualElement>
+                </ui:Foldout>
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="BottomPanel" picking-mode="Ignore" style="flex-grow: 1; bottom: auto; top: auto; justify-content: center; align-items: flex-end; flex-direction: row; position: relative; flex-shrink: 0; align-self: flex-end;">
+            <ui:VisualElement name="MainControls" picking-mode="Ignore" style="flex-grow: 1;">
+                <ui:Button text="Save" parse-escape-sequences="true" display-tooltip-when-elided="true" name="SaveButton" class="text" />
+                <ui:Button text="Back" parse-escape-sequences="true" display-tooltip-when-elided="true" name="BackToSelectionButton" class="text" />
+            </ui:VisualElement>
+            <ui:VisualElement name="LevelSettings" picking-mode="Ignore" style="flex-grow: 1;">
+                <ui:Button text="Ships" parse-escape-sequences="true" display-tooltip-when-elided="true" name="ShipsButton" class="text" />
+                <ui:Button text="Size" parse-escape-sequences="true" display-tooltip-when-elided="true" name="SizeButton" class="text" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="Popups" style="flex-grow: 1; position: absolute; left: auto; width: 100%; height: 100%; top: auto;">
+            <ui:VisualElement name="SizeEditPopup" style="flex-grow: 0; width: 90%; align-items: stretch; height: auto; align-self: center; justify-content: center; top: 25%; background-color: rgba(0, 0, 0, 0.54); border-top-left-radius: 15px; border-top-right-radius: 15px; border-bottom-right-radius: 15px; border-bottom-left-radius: 15px; border-top-width: 3px; border-right-width: 3px; border-bottom-width: 3px; border-left-width: 3px; border-left-color: rgba(255, 255, 255, 0.6); border-right-color: rgba(255, 255, 255, 0.6); border-top-color: rgba(255, 255, 255, 0.6); border-bottom-color: rgba(255, 255, 255, 0.6); transition-property: opacity; transition-duration: 0.7s; transition-timing-function: ease-out; opacity: 1;">
+                <ui:VisualElement name="Controls" style="flex-grow: 1; margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; align-items: stretch;">
+                    <ui:Label tabindex="-1" text="Width" parse-escape-sequences="true" display-tooltip-when-elided="true" class="text" style="align-items: center; -unity-text-align: upper-center;" />
+                    <ui:SliderInt high-value="12" name="WidthSlider" low-value="2" show-input-field="true" />
+                    <ui:Label tabindex="-1" text="Height" parse-escape-sequences="true" display-tooltip-when-elided="true" class="text" style="align-items: center; -unity-text-align: upper-center;" />
+                    <ui:SliderInt high-value="12" name="HeightSlider" low-value="2" show-input-field="true" />
+                    <ui:VisualElement style="flex-grow: 1; flex-direction: row; justify-content: center;">
+                        <ui:Button text="Apply" parse-escape-sequences="true" display-tooltip-when-elided="true" name="ApplySizeButton" class="smalltext" style="flex-grow: 0.2; align-items: center; align-self: center; justify-content: center;" />
+                        <ui:Button text="Back" parse-escape-sequences="true" display-tooltip-when-elided="true" name="BackSizeButton" class="smalltext" style="flex-grow: 0.2; align-items: center; align-self: center; justify-content: center;" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement name="ShipEditPopup" style="flex-grow: 0; width: 90%; align-items: stretch; height: auto; align-self: center; justify-content: center; top: 25%; background-color: rgba(0, 0, 0, 0.54); border-top-left-radius: 15px; border-top-right-radius: 15px; border-bottom-right-radius: 15px; border-bottom-left-radius: 15px; border-top-width: 3px; border-right-width: 3px; border-bottom-width: 3px; border-left-width: 3px; border-left-color: rgba(255, 255, 255, 0.6); border-right-color: rgba(255, 255, 255, 0.6); border-top-color: rgba(255, 255, 255, 0.6); border-bottom-color: rgba(255, 255, 255, 0.6); transition-property: opacity; transition-duration: 0.7s; transition-timing-function: ease-out; opacity: 1;">
+                <ui:VisualElement name="Controls" style="flex-grow: 1; margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; align-items: stretch;">
+                    <ui:Label tabindex="-1" text="Level Ships" parse-escape-sequences="true" display-tooltip-when-elided="true" class="text" style="align-items: center; -unity-text-align: upper-center;" />
+                    <ui:VisualElement style="flex-grow: 1; flex-direction: row; justify-content: space-around; align-self: stretch;">
+                        <ui:DropdownField index="-1" choices="System.Collections.Generic.List`1[System.String]" name="ShipSelector" style="flex-grow: 1;" />
+                        <ui:Button text="Remove" parse-escape-sequences="true" display-tooltip-when-elided="true" name="RemoveShipButton" class="smalltext" />
+                    </ui:VisualElement>
+                    <ui:VisualElement style="flex-grow: 1; flex-direction: row; justify-content: space-around; align-self: stretch;">
+                        <ui:EnumField type="PassengerColor, Assembly-CSharp" name="ShipColorSelect" style="flex-grow: 1;" />
+                        <ui:Button text="Add New" parse-escape-sequences="true" display-tooltip-when-elided="true" name="AddNewShipButton" class="smalltext" />
+                    </ui:VisualElement>
+                    <ui:Button text="Set Color" parse-escape-sequences="true" display-tooltip-when-elided="true" name="SetColorButton" class="smalltext" />
+                    <ui:VisualElement style="flex-grow: 1; flex-direction: row; justify-content: center;">
+                        <ui:Button text="Apply" parse-escape-sequences="true" display-tooltip-when-elided="true" name="ApplyShipsButton" class="smalltext" style="flex-grow: 0.2; align-items: center; align-self: center; justify-content: center;" />
+                        <ui:Button text="Back" parse-escape-sequences="true" display-tooltip-when-elided="true" name="BackShipsButton" class="smalltext" style="flex-grow: 0.2; align-items: center; align-self: center; justify-content: center;" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>
