@@ -13,9 +13,10 @@ public class StartScreen : MonoBehaviour
 
     private void SetLevelText()
     {
-        buttonText.text = "Level " + Game.Manager.CurrentLevel.ToString();
-        if (Game.Manager.CurrentLevel > 1)
-            resetButton.SetActive(true);
+        int currentLevel = Game.Manager.CurrentLevel;
+        buttonText.text = Game.Manager.DoesLevelExist(currentLevel) ? "Level " + currentLevel.ToString() : "Completed!";
+        if (currentLevel > 1){
+            resetButton.SetActive(true);}
         else resetButton.SetActive(false);
     }
 

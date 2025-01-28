@@ -1,20 +1,23 @@
 {
-    "levelNumber": 0,
-    "gridSize": {
-        "x": 4,
-        "y": 4
-    },
-    "invalidCells": [],
+    "levelNumber": 3,
+    "gridSize": { "x": 5, "y": 6 },
+    "invalidCells": [
+        { "x": 0, "y": 0 },
+        { "x": 4, "y": 0 }
+    ],
     "passengers": [
-        {
-            "x": 3,
-            "y": 2,
-            "color": 0,
-            "isHidden": false
-        }
+        { "x": 1, "y": 4, "color": 0, "isHidden": false },
+        { "x": 3, "y": 4, "color": 0, "isHidden": false },
+        { "x": 2, "y": 3, "color": 0, "isHidden": true },
+        { "x": 1, "y": 2, "color": 1, "isHidden": false },
+        { "x": 3, "y": 2, "color": 1, "isHidden": false },
+        { "x": 2, "y": 1, "color": 1, "isHidden": true }
     ],
     "tunnels": [],
-    "busSequence": [],
-    "timeLimit": 60.0,
-    "benchSlots": 5
+    "busSequence": [
+        { "color": 1, "arrivalOrder": 0, "capacity": 3 },
+        { "color": 0, "arrivalOrder": 1, "capacity": 3 }
+    ],
+    "timeLimit": 120.0,
+    "benchSlots": 3
 }

@@ -29,7 +29,20 @@ public class GameManager : MonoBehaviour
 
     public void StartGame()
     {
+        if (!DoesLevelExist(CurrentLevel))
+        {
+            OpenMainMenu();
+            return;
+        }
+
         SceneManager.LoadScene(gameScene.name);
+    }
+
+    public bool DoesLevelExist(int levelNumber)
+    {
+        string levelPath = $"Levels/level_{levelNumber}";
+        var levelAsset = Resources.Load<TextAsset>(levelPath);
+        return levelAsset != null;
     }
 
     public void OpenLevelEditor()
