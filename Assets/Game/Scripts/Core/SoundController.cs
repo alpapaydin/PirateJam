@@ -30,9 +30,13 @@ public class SoundController : MonoBehaviour
 
     private Queue<AudioSource> audioSourcePool;
     private List<AudioSource> activeAudioSources;
+    private AudioSource currentBGM;
 
     [SerializeField]
     private float masterVolume = 1f;
+
+    [SerializeField]
+    private int bgmCount = 4;
 
     [SerializeField]
     private float sfxVolume = 1f;
@@ -115,7 +119,6 @@ public class SoundController : MonoBehaviour
         audioSource.volume = sound.volume * (isUI ? uiVolume : sfxVolume) * masterVolume;
         audioSource.pitch = sound.pitch;
         audioSource.loop = sound.loop;
-
         audioSource.Play();
 
         if (!sound.loop)
@@ -124,24 +127,34 @@ public class SoundController : MonoBehaviour
         }
     }
 
-    public void StopSound(string soundName)
+    public void PlayBGM(string soundName)
     {
+        if (currentBGM != null && currentBGM.isPlaying)
+        {
+            ReleaseAudioSource(currentBGM);
+            currentBGM = null;
+        }
+        if (!soundDictionary.TryGetValue(soundName, out Sound sound))
+        {
+            Debug.LogWarning($"BGM sound not found: {soundName}");
+            return;
+        }
+
+        PlaySound(soundName);
         foreach (AudioSource source in activeAudioSources)
         {
-            if (source.clip != null && source.clip.name == soundName)
+            if (source.clip == sound.clip)
             {
-                ReleaseAudioSource(source);
+                currentBGM = source;
                 break;
             }
         }
     }
 
-    public void StopAllSounds()
+    public void PlayLevelBGM()
     {
-        foreach (AudioSource source in activeAudioSources.ToArray())
-        {
-            ReleaseAudioSource(source);
-        }
+        int randomBGM = UnityEngine.Random.Range(1, bgmCount+1);
+        PlayBGM($"bgm{randomBGM}");
     }
 
     private IEnumerator ReleaseWhenFinished(AudioSource audioSource)

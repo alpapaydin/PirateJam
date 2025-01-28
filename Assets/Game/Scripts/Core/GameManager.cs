@@ -34,7 +34,7 @@ public class GameManager : MonoBehaviour
             OpenMainMenu();
             return;
         }
-
+        Game.Sound.PlayLevelBGM();
         SceneManager.LoadScene(gameScene.name);
     }
 

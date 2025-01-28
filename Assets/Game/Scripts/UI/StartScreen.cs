@@ -9,6 +9,7 @@ public class StartScreen : MonoBehaviour
     private void Start()
     {
         SetLevelText();
+        Game.Sound.PlayBGM("menubgm");
     }
 
     private void SetLevelText()
