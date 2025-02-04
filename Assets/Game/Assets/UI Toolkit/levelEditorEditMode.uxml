@@ -70,6 +70,8 @@
                         <ui:Button text="Add New" parse-escape-sequences="true" display-tooltip-when-elided="true" name="AddNewShipButton" class="smalltext" />
                     </ui:VisualElement>
                     <ui:Button text="Set Color" parse-escape-sequences="true" display-tooltip-when-elided="true" name="SetColorButton" class="smalltext" />
+                    <ui:Label tabindex="-1" text="Level Time Limit" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Label" class="smalltext" style="-unity-text-align: upper-center;" />
+                    <ui:SliderInt high-value="120" show-input-field="true" name="TimeLimitSlider" />
                     <ui:VisualElement style="flex-grow: 1; flex-direction: row; justify-content: center;">
                         <ui:Button text="Apply" parse-escape-sequences="true" display-tooltip-when-elided="true" name="ApplyShipsButton" class="smalltext" style="flex-grow: 0.2; align-items: center; align-self: center; justify-content: center;" />
                         <ui:Button text="Back" parse-escape-sequences="true" display-tooltip-when-elided="true" name="BackShipsButton" class="smalltext" style="flex-grow: 0.2; align-items: center; align-self: center; justify-content: center;" />

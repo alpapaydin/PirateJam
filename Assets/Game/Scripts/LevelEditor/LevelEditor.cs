@@ -60,6 +60,8 @@ public class LevelEditor : MonoBehaviour
     private Button setShipColorButton;
     private Button applyShipsButton;
     private Button backShipsButton;
+    private SliderInt timeLimitSlider;
+
 
     private VisualElement tileOptionsPanel;
     private Vector2Int selectedTilePosition;
@@ -320,6 +322,8 @@ public class LevelEditor : MonoBehaviour
         applyShipsButton = root.Q<Button>("ApplyShipsButton");
         backShipsButton = root.Q<Button>("BackShipsButton");
         shipColorSelector.Init(PassengerColor.Red);
+        timeLimitSlider = root.Q<SliderInt>("TimeLimitSlider");
+
         HidePopups();
 
         closeSaveFailedButton.clicked += HidePopups;
@@ -483,6 +487,7 @@ public class LevelEditor : MonoBehaviour
             choices.Add($"{i}: {currentLevel.busSequence[i].color}");
         }
         shipSelector.choices = choices;
+        timeLimitSlider.value = (int)currentLevel.timeLimit;
         if (choices.Count > 0)
             shipSelector.value = choices[0];
     }
@@ -533,6 +538,7 @@ public class LevelEditor : MonoBehaviour
 
     private void ApplyShips()
     {
+        currentLevel.timeLimit = timeLimitSlider.value;
         grid.ConstructGrid(currentLevel);
         HidePopups();
     }
